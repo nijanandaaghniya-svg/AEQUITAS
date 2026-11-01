@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aequitas - ASEAN Biodiversity Interactive Map</title>
+  
+  <!-- Tailwind CSS & FontAwesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts for UI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandNavy: '#121858',
+            brandCyan: '#429EBD',
+            brandGreen: '#63D485',
+            brandYellow: '#F4F9A6',
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .modal-active {
+      overflow: hidden;
+    }
+    .flag-pin {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .flag-pin:hover {
+      transform: scale(1.15);
+      filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.25));
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- ==================== NAVIGATION BAR ==================== -->
+  <nav class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- BRAND LOGO -->
+        <a href="index.html" class="flex items-center space-x-3 cursor-pointer">
+          <img src="logo.jpeg" alt="Logo" class="h-10 sm:h-12 w-auto object-contain">
+          <img src="fontremoved.png" alt="Font Text" class="h-7 sm:h-9 w-auto object-contain">
+        </a>
+
+        <!-- Desktop Navigation & Language Switcher -->
+        <div class="hidden md:flex items-center space-x-6 text-sm font-semibold text-slate-700">
+          <a href="index.html#vision" class="hover:text-brandCyan transition-colors" data-i18n="nav_vision">Our Vision</a>
+          <a href="index.html#indicators" class="hover:text-brandCyan transition-colors" data-i18n="nav_features">Features</a>
+          <a href="map.html" class="text-brandCyan font-bold transition-colors" data-i18n="nav_explore">Explore Map</a>
+          <a href="index.html#partner" class="px-4 py-2 rounded-full bg-brandNavy text-white hover:bg-brandCyan transition-all shadow-md font-bold" data-i18n="nav_partner">
+            Potential Partner
+          </a>
+
+          <!-- ASEAN Language Selector Dropdown -->
+          <div class="relative inline-block text-left">
+            <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-slate-100 text-slate-700 font-medium text-xs rounded-lg px-3 py-2 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brandCyan cursor-pointer">
+              <option value="en">🇬🇧 English (Default)</option>
+              <option value="id">🇮🇩 Bahasa Indonesia</option>
+              <option value="vi">🇻🇳 Tiếng Việt</option>
+              <option value="ms">🇲🇾 Bahasa Melayu</option>
+              <option value="tl">🇵🇭 Tagalog</option>
+              <option value="th">🇹🇭 ภาษาไทย</option>
+              <option value="my">🇲🇲 မြန်မာဘာသာ</option>
+              <option value="km">🇰🇭 ភាសាខ្មែរ</option>
+              <option value="lo">🇱🇦 ພາສາລາວ</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Mobile Menu & Language Selector -->
+        <div class="md:hidden flex items-center space-x-2">
+          <select id="mobileLangSelect" onchange="changeLanguage(this.value)" class="bg-slate-100 text-xs rounded-md px-2 py-1 border border-slate-300">
+            <option value="en">🇬🇧 EN</option>
+            <option value="id">🇮🇩 ID</option>
+            <option value="vi">🇻🇳 VI</option>
+            <option value="ms">🇲🇾 MS</option>
+            <option value="tl">🇵🇭 TL</option>
+            <option value="th">🇹🇭 TH</option>
+            <option value="my">🇲🇲 MY</option>
+            <option value="km">🇰🇭 KM</option>
+            <option value="lo">🇱🇦 LO</option>
+          </select>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-bold text-xs">
+            <i class="fa-solid fa-arrow-left"></i> Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==================== MAIN CONTENT SECTION ==================== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow">
+    
+    <!-- Header Title -->
+    <div class="text-center max-w-3xl mx-auto mb-8">
+      <span class="px-4 py-1.5 rounded-full bg-brandCyan/20 text-brandNavy font-extrabold text-xs uppercase tracking-wider mb-3 inline-block">
+        <i class="fa-solid fa-map-location-dot mr-1"></i> <span data-i18n="badge_map">Interactive ASEAN Biodiversity Map</span>
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-brandNavy mb-3" data-i18n="map_main_title">
+        Click Country Flags on the Map
+      </h1>
+      <p class="text-slate-600 text-sm sm:text-base" data-i18n="map_main_subtitle">
+        Klik langsung pada bendera negara di dalam peta wilayah ASEAN di bawah ini untuk melihat daftar lengkap flora dan fauna endemiknya.
+      </p>
+    </div>
+
+    <!-- Interactive Map Container with Clickable Flag Hotspots -->
+    <div class="bg-white p-4 sm:p-8 rounded-3xl shadow-xl border border-slate-100 relative max-w-5xl mx-auto">
+      
+      <div class="relative inline-block w-full text-center">
+        <!-- Gambar Peta ASEAN -->
+        <img src="asean-map-countries-location-flags-40294386.webp" alt="ASEAN Map" class="rounded-2xl shadow-inner w-full object-contain max-h-[600px] mx-auto border border-slate-200">
+
+        <!-- ================= CLICKABLE FLAG OVERLAYS / HOTSPOTS ================= -->
+        
+        <!-- 1. MYANMAR -->
+        <div onclick="openCountryModal('myanmar')" class="flag-pin absolute top-[12%] left-[10%] sm:left-[14%] bg-white/90 px-2 py-1 rounded-md shadow-md border border-brandNavy text-center">
+          <span class="text-xs font-black block text-brandNavy">🇲🇲 MYANMAR</span>
+          <span class="text-[9px] text-brandCyan font-bold" data-i18n="click_view">Click to View</span>
+        </div>
+
+        <!-- 2. LAOS -->
+        <div onclick="openCountryModal('laos')" class="flag-pin absolute top-[16%] left-[32%] sm:left-[35%] bg-white/90 px-2 py-1 rounded-md shadow-md border border-brandNavy text-center">
+          <span class="text-xs font-black block text-brandNavy">🇱🇦 LAOS</span>
+          <span class="text-[9px] text-brandCyan font-bold" data-i18n="click_view">Click to View</span>
+        </div>
+
+        <!-- 3. THAILAND -->
+        <div onclick="openCountryModal('thailand')" class="flag-pin absolute top-[35%] left-[20%] sm:left-[24%] bg-white/90 px-2 py-1 rounded-md shadow-md border border-brandNavy text-center">
+          <span class="text-xs font-black block text-brandNavy">🇹🇭 THAILAND</span>
+          <span class="text-[9px] text-brandCyan font-bold" data-i18n="click_view">Click to View</span>
+        </div>
+
+        <!-- 4. VIETNAM -->
+        <div onclick="openCountryModal('vietnam')" class="flag-pin absolute top-[28%] left-[46%] sm:left-[48%] bg-white/90 px-2 py-1 rounded-md shadow-md border border-brandNavy text-center">
+          <span class="text-xs font-black block text-brandNavy">🇻🇳 VIETNAM</span>
+          <span class="text-[9px] text-brandCyan font-bold" data-i18n="click_view">Click to View</span>
+        </div>
+
+        <!-- 5. CAMBODIA -->
+        <div onclick="openCountryModal('cambodia')" class="flag-pin absolute top-[47%] left-[36%] sm:left-[38%] bg-white/90 px-2 py-1 rounded-md shadow-md border border-brandNavy text-center">
+          <span class="text-xs font-black block text-brandNavy">🇰🇭 CAMBODIA</span>
+          <span class="text-[9px] text-brandCyan font-bold" data-i18n="click_view">Click to View</span>
+        </div>
+
+        <!-- 6. MALAYSIA -->
+        <div onclick="openCountryModal('malaysia')" class="flag-pin absolute top-[43%] left-[10%] sm:left-[13%] bg-white/90 px-2 py-1 rounded-md shadow-md border border-brandNavy text-center">
+          <span class="text-xs font-black block text-brandNavy">🇲🇾 MALAYSIA</span>
+          <span class="text-[9px] text-brandCyan font-bold" data-i18n="click_view">Click to View</span>
+        </div>
+
+        <!-- 7. BRUNEI DARUSSALAM -->
+        <div onclick="openCountryModal('brunei')" class="flag-pin absolute top-[45%] left-[53%] sm:left-[52%] bg-white/90 px-2 py-1 rounded-md shadow-md border border-brandNavy text-center">
+          <span class="text-xs font-black block text-brandNavy">🇧🇳 BRUNEI</span>
+          <span class="text-[9px] text-brandCyan font-bold" data-i18n="click_view">Click to View</span>
+        </div>
+
+        <!-- 8. SINGAPORE -->
+        <div onclick="openCountryModal('singapore')" class="flag-pin absolute top-[57%] left-[29%] sm:left-[32%] bg-white/90 px-2 py-1 rounded-md shadow-md border border-brandNavy text-center">
+          <span class="text-xs font-black block text-brandNavy">🇸🇬 SINGAPORE</span>
+          <span class="text-[9px] text-brandCyan font-bold" data-i18n="click_view">Click to View</span>
+        </div>
+
+        <!-- 9. PHILIPPINES -->
+        <div onclick="openCountryModal('philippines')" class="flag-pin absolute top-[23%] right-[15%] sm:right-[18%] bg-white/90 px-2 py-1 rounded-md shadow-md border border-brandNavy text-center">
+          <span class="text-xs font-black block text-brandNavy">🇵🇭 PHILIPPINES</span>
+          <span class="text-[9px] text-brandCyan font-bold" data-i18n="click_view">Click to View</span>
+        </div>
+
+        <!-- 10. INDONESIA -->
+        <div onclick="openCountryModal('indonesia')" class="flag-pin absolute bottom-[10%] left-[38%] sm:left-[40%] bg-white/90 px-3 py-1.5 rounded-md shadow-lg border-2 border-brandGreen text-center">
+          <span class="text-xs font-black block text-brandNavy">🇮🇩 INDONESIA</span>
+          <span class="text-[10px] text-brandGreen font-extrabold" data-i18n="click_view">Click to View</span>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ==================== COUNTRY DETAIL MODAL (LIST ONLY, NO IMAGES) ==================== -->
+  <div id="countryModal" class="fixed inset-0 z-50 hidden bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[85vh] overflow-y-auto border-4 border-brandCyan">
+      
+      <!-- Close Button -->
+      <button onclick="closeCountryModal()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- Modal Header -->
+      <div class="mb-6 border-b border-slate-100 pb-4">
+        <span id="modalCountryFlag" class="text-3xl mr-2">🇮🇩</span>
+        <h2 id="modalCountryTitle" class="text-2xl font-extrabold text-brandNavy inline-block align-middle">Country Name</h2>
+        <p id="modalCountrySubtitle" class="text-xs text-slate-500 mt-1" data-i18n="modal_sub">Daftar Lengkap Keanekaragaman Hayati (Flora & Fauna Endemik)</p>
+      </div>
+
+      <!-- Content Container for Fauna & Flora List -->
+      <div id="modalContentContainer" class="space-y-6">
+        <!-- Diisi otomatis melalui JS -->
+      </div>
+
+      <div class="mt-8 pt-4 border-t border-slate-100 text-center">
+        <button onclick="closeCountryModal()" class="px-6 py-2.5 rounded-xl bg-brandNavy text-white font-bold hover:bg-brandCyan transition-colors text-sm" data-i18n="close_btn">
+          Tutup / Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-12">
+    <div class="max-w-7xl mx-auto px-4 text-center sm:flex sm:justify-between sm:items-center">
+      <div class="flex items-center justify-center sm:justify-start space-x-2">
+        <img src="fontremoved.png" alt="AEQUITAS" class="h-5 w-auto object-contain brightness-200">
+        <span class="text-xs">&copy; 2026. All rights reserved.</span>
+      </div>
+      <p class="text-xs mt-2 sm:mt-0" data-i18n="footer_tag">Empowering ASEAN Youth for Biodiversity & Climate Action</p>
+    </div>
+  </footer>
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <script>
+    let currentLanguage = 'en';
+    let activeCountryKey = '';
+
+    // Database Lengkap List Fauna & Flora untuk 10 Negara dalam 9 Bahasa ASEAN
+    const biodiversityData = {
+      en: {
+        indonesia: {
+          name: "Indonesia", flag: "🇮🇩",
+          fauna: [
+            { name: "Komodo Dragon (Varanus komodoensis)", desc: "The largest living lizard species on Earth, native to Komodo, Rinca, Flores, and Gili Motang." },
+            { name: "Orangutan (Pongo abelii & Pongo pygmaeus)", desc: "Highly intelligent great apes native to the rainforests of Borneo and Sumatra." },
+            { name: "Sumatran Tiger (Panthera tigris sumatrae)", desc: "The smallest subspecies of tiger, characterized by heavy black stripes on rich orange fur." },
+            { name: "Javan Rhinoceros (Rhinoceros sondaicus)", desc: "One of the rarest large mammals on Earth, strictly protected in Ujung Kulon National Park." },
+            { name: "Maleo Bird (Macrocephalon maleo)", desc: "An endangered megapode bird that uses geothermal heat to incubate its oversized eggs." },
+            { name: "Babirusa (Babyrousa)", desc: "A wild pig relative native to Sulawesi with striking upward-curving tusks." }
+          ],
+          flora: [
+            { name: "Rafflesia arnoldii", desc: "The parasitic plant known for producing the largest individual flower on Earth." },
+            { name: "Titan Arum (Amorphophallus titanum)", desc: "Famous for producing the tallest unbranched inflorescence in the world, emitting a carrion scent." },
+            { name: "Javan Fig / Banyan Tree (Ficus benjamina)", desc: "Sacred large trees providing deep canopy cover and supporting local ecosystems." },
+            { name: "Eboni Wood (Diospyros celebica)", desc: "A premium dark tropical hardwood native to Sulawesi forests." }
+          ]
+        },
+        malaysia: {
+          name: "Malaysia", flag: "🇲🇾",
+          fauna: [
+            { name: "Malayan Tiger (Panthera tigris jacksoni)", desc: "A majestic tiger subspecies native to the central and southern parts of the Malay Peninsula." },
+            { name: "Bornean Pygmy Elephant (Elephas maximus borneensis)", desc: "The smallest elephant subspecies in Asia, known for oversized ears and curved tails." },
+            { name: "Rhinoceros Hornbill (Buceros rhinoceros)", desc: "A large striking hornbill species serving as the state bird of Sarawak." },
+            { name: "Proboscis Monkey (Nasalis larvatus)", desc: "An arboreal Old World monkey easily recognized by its unusually large protruding nose." }
+          ],
+          flora: [
+            { name: "Pitcher Plant (Nepenthes rajah)", desc: "A giant carnivorous tropical pitcher plant endemic to Mount Kinabalu and Mount Tambuyukon." },
+            { name: "Meranti Tree (Shorea)", desc: "Towering canopy rainforest hardwood trees vital to Southeast Asian timber ecology." },
+            { name: "Tongkat Ali (Eurycoma longifolia)", desc: "A medicinal shrub native to Malaysian rainforests widely valued in traditional herbal remedies." }
+          ]
+        },
+        thailand: {
+          name: "Thailand", flag: "🇹🇭",
+          fauna: [
+            { name: "Asian Elephant (Elephas maximus)", desc: "The national animal of Thailand, revered culturally and ecologically in dense tropical forests." },
+            { name: "Indochinese Leopard (Panthera pardus delacouri)", desc: "A secretive solitary big cat roaming forested hills and dense national parks." },
+            { name: "Binturong (Arctictis binturong)", desc: "A unique viverrid mammal often called a bearcat, smelling distinctively like buttered popcorn." }
+          ],
+          flora: [
+            { name: "Ratchaphruek / Golden Shower Tree (Cassia fistula)", desc: "The national flower of Thailand featuring brilliant cascading yellow blossoms." },
+            { name: "Siamese Rosewood (Dalbergia cochinchinensis)", desc: "A slow-growing dense timber tree prized for fine furniture and intricate woodwork." }
+          ]
+        },
+        vietnam: {
+          name: "Vietnam", flag: "🇻🇳",
+          fauna: [
+            { name: "Saola (Pseudoryx nghetinhensis)", desc: "Often referred to as the 'Asian Unicorn', one of the world's most elusive forest ungulates." },
+            { name: "Red-shanked Douc Langur (Pygathrix nemaeus)", desc: "A brightly colored arboreal primate recognized as one of the most beautiful monkeys globally." },
+            { name: "Tonkin Snub-nosed Monkey (Rhinopithecus avunculus)", desc: "A critically endangered colobine monkey endemic to northeastern Vietnam forests." }
+          ],
+          flora: [
+            { name: "Lotus (Nelumbo nucifera)", desc: "Vietnam's national flower symbolizing purity, commitment, and spiritual awakening." },
+            { name: "Cajuput Tree (Melaleuca cajuputi)", desc: "Resilient wetland trees covering vast flooded ecosystems in the Mekong Delta." }
+          ]
+        },
+        philippines: {
+          name: "Philippines", flag: "🇵🇭",
+          fauna: [
+            { name: "Philippine Eagle (Pithecophaga jefferyi)", desc: "One of the world's largest and most powerful raptors, endemic to Philippine tropical forests." },
+            { name: "Tamaraw (Bubalus mindorensis)", desc: "A small endangered dwarf buffalo native exclusively to Mindoro Island." },
+            { name: "Philippine Tarsier (Carlito syrichta)", desc: "One of the smallest primates worldwide featuring oversized amber eyes." }
+          ],
+          flora: [
+            { name: "Narra Tree (Pterocarpus indicus)", desc: "The national tree of Philippines renowned for its strong durable timber and yellow flowers." },
+            { name: "Waling-waling (Euanthe sanderiana)", desc: "An exquisite orchid species often hailed as the 'Queen of Philippine Flowers'." }
+          ]
+        },
+        myanmar: {
+          name: "Myanmar", flag: "🇲🇲",
+          fauna: [
+            { name: "Hoolock Gibbon (Hoolock)", desc: "A small arboreal ape swinging through dense highland and lowland forests." },
+            { name: "Myanmar Snub-nosed Monkey (Rhinopithecus strykeri)", desc: "A distinctive primate discovered recently with upturned nostrils that sneeze during heavy rain." }
+          ],
+          flora: [
+            { name: "Padauk Tree (Pterocarpus indicus)", desc: "A fragrant golden-yellow flowering tree deeply tied to Myanmar traditional festivals." },
+            { name: "Teak Tree (Tectona grandis)", desc: "World-famous resilient hardwood native to Myanmar tropical deciduous forests." }
+          ]
+        },
+        cambodia: {
+          name: "Cambodia", flag: "🇰🇭",
+          fauna: [
+            { name: "Giant Ibis (Thaumatibis gigantea)", desc: "Cambodia's national bird, representing the largest ibis species globally in wetland habitats." },
+            { name: "Irrawaddy Dolphin (Orcaella brevirostris)", desc: "A charismatic freshwater dolphin population inhabiting the upper Mekong River." }
+          ],
+          flora: [
+            { name: "Rumdul (Mitrella mesnyi)", desc: "The national flower of Cambodia known for its delicate yellow petals and sweet nighttime fragrance." }
+          ]
+        },
+        laos: {
+          name: "Laos", flag: "🇱🇦",
+          fauna: [
+            { name: "Indochinese Tiger & Asian Wild Dog (Dhole)", desc: "Apex predators roaming remote limestone karst mountains and thick jungles." },
+            { name: "Laotian Rock Rat (Kha-nyou)", desc: "A living fossil rodent species rediscovered recently in central Laotian limestone cliffs." }
+          ],
+          flora: [
+            { name: "Dok Champa (Plumeria / Frangipani)", desc: "The national flower of Laos symbolizing sincerity, joy, and spiritual devotion." }
+          ]
+        },
+        brunei: {
+          name: "Brunei Darussalam", flag: "🇧🇳",
+          fauna: [
+            { name: "Bornean Bristlehead (Pityriasis gymnocephala)", desc: "A distinct reddish forest bird native to pristine lowland rainforests of Borneo." },
+            { name: "Sunda Clouded Leopard (Neofelis diardi)", desc: "An elusive nocturnal wild cat hunting across undisturbed forest reserves." }
+          ],
+          flora: [
+            { name: "Simpor (Dillenia suffruticosa)", desc: "Brunei's national flower featuring bright yellow petals and large tropical leaves." }
+          ]
+        },
+        singapore: {
+          name: "Singapore", flag: "🇸🇬",
+          fauna: [
+            { name: "Sunda Slow Loris (Nycticebus coucang)", desc: "A nocturnal venomous primate taking shelter in secondary rainforest patches like Bukit Timah." },
+            { name: "Oriental Pied Hornbill (Anthracoceros albirostris)", desc: "A successful urban-adapted hornbill species making a remarkable comeback in local parks." }
+          ],
+          flora: [
+            { name: "Vanda Miss Joaquim", desc: "Singapore's national orchid hybrid symbolizing resilience and vibrant multicultural identity." }
+          ]
+        }
+      },
+      id: {
+        indonesia: {
+          name: "Indonesia", flag: "🇮🇩",
+          fauna: [
+            { name: "Komodo (Varanus komodoensis)", desc: "Kadal terbesar di dunia yang asli berasal dari Pulau Komodo, Rinca, Flores, dan Gili Motang." },
+            { name: "Orangutan (Pongo abelii & Pongo pygmaeus)", desc: "Kera besar cerdas yang hidup di hutan hujan Kalimantan dan Sumatra." },
+            { name: "Harimau Sumatra (Panthera tigris sumatrae)", desc: "Subspesies harimau terkecil dengan ciri belang hitam pekat pada bulu jingga." },
+            { name: "Badak Jawa (Rhinoceros sondaicus)", desc: "Salah satu mamalia besar terlangka di dunia, dilindungi di Taman Nasional Ujung Kulon." },
+            { name: "Burung Maleo (Macrocephalon maleo)", desc: "Burung megapoda langka yang menggunakan panas geotermal untuk menetaskan telurnya." },
+            { name: "Babirusa (Babyrousa)", desc: "Kerabat babi hutan endemik Sulawesi dengan taring melengkung ke atas." }
+          ],
+          flora: [
+            { name: "Rafflesia arnoldii", desc: "Tanaman parasit terkenal yang menghasilkan bunga tunggal terbesar di dunia." },
+            { name: "Bunga Bangkai Raksasa (Amorphophallus titanum)", desc: "Menghasilkan perbungaan tertinggi di dunia dengan aroma khas bangkai." },
+            { name: "Pohon Beringin (Ficus benjamina)", desc: "Pohon besar keramat pelindung ekosistem dan penyedia kanopi mendalam." },
+            { name: "Kayu Eboni (Diospyros celebica)", desc: "Kayu keras tropis berwarna gelap berkualitas tinggi asal hutan Sulawesi." }
+          ]
+        },
+        malaysia: {
+          name: "Malaysia", flag: "🇲🇾",
+          fauna: [
+            { name: "Harimau Malaya (Panthera tigris jacksoni)", desc: "Subspesies harimau megah asli Semenanjung Malaysia." },
+            { name: "Gajah Kerdil Borneo (Elephas maximus borneensis)", desc: "Subspesies gajah terkecil di Asia dengan telinga lebar dan ekor melengkung." },
+            { name: "Burung Enggang Rangkong (Buceros rhinoceros)", desc: "Burung enggang besar yang menjadi simbol burung negara bagian Sarawak." },
+            { name: "Bekantan (Nasalis larvatus)", desc: "Monyet arboreal Dunia Lama yang mudah dikenali berkat hidung panjangnya." }
+          ],
+          flora: [
+            { name: "Kantong Semar Raksasa (Nepenthes rajah)", desc: "Tanaman karnivora endemik Gunung Kinabalu dan Tambuyukon." },
+            { name: "Pohon Meranti (Shorea)", desc: "Pohon kayu keras hutan hujan tinggi yang penting bagi ekologi." },
+            { name: "Tongkat Ali (Eurycoma longifolia)", desc: "Semak obat tradisional hutan hujan Malaysia." }
+          ]
+        },
+        thailand: {
+          name: "Thailand", flag: "🇹🇭",
+          fauna: [
+            { name: "Gajah Asia (Elephas maximus)", desc: "Hewan nasional Thailand yang dihormati secara budaya dan ekologis." },
+            { name: "Macan Tutul Indochina (Panthera pardus delacouri)", desc: "Kucing besar penyendiri yang menjelajahi bukit berhutan lebat." },
+            { name: "Binturong (Arctictis binturong)", desc: "Mamalia unik beraroma khas seperti popcorn mentega." }
+          ],
+          flora: [
+            { name: "Ratchaphruek / Cassia fistula", desc: "Bunga nasional Thailand dengan gugusan kelopak kuning cerah." },
+            { name: "Kayu Mawar Siam (Dalbergia cochinchinensis)", desc: "Pohon kayu keras lambat tumbuh untuk furnitur mewah." }
+          ]
+        },
+        vietnam: {
+          name: "Vietnam", flag: "🇻🇳",
+          fauna: [
+            { name: "Saola (Pseudoryx nghetinhensis)", desc: "Dikenal sebagai 'Unicorn Asia', salah satu ungulata hutan paling misterius." },
+            { name: "Lutung Douc Kaki Merah (Pygathrix nemaeus)", desc: "Primata berwarna cerah yang diakui sebagai salah satu monyet terindah di dunia." },
+            { name: "Monyet Hidung Pesek Tonkin (Rhinopithecus avunculus)", desc: "Monyet endemik Vietnam utara yang terancam punah." }
+          ],
+          flora: [
+            { name: "Bunga Teratai (Nelumbo nucifera)", desc: "Bunga nasional Vietnam yang melambangkan kemurnian." },
+            { name: "Pohon Gelam (Melaleuca cajuputi)", desc: "Pohon lahan basah tangguh di Delta Mekong." }
+          ]
+        },
+        philippines: {
+          name: "Philippines", flag: "🇵🇭",
+          fauna: [
+            { name: "Elang Filipina (Pithecophaga jefferyi)", desc: "Salah satu burung pemangsa terbesar dan terkuat di dunia." },
+            { name: "Tamaraw (Bubalus mindorensis)", desc: "Kerbau kerdil terancam punah endemik Pulau Mindoro." },
+            { name: "Tarsius Filipina (Carlito syrichta)", desc: "Primata berukuran sangat kecil dengan mata kuning besar." }
+          ],
+          flora: [
+            { name: "Pohon Narra (Pterocarpus indicus)", desc: "Pohon nasional Filipina berlapis kayu kuat dan bunga kuning." },
+            { name: "Anggrek Waling-waling (Euanthe sanderiana)", desc: "Anggrek eksotis yang dijuluki 'Ratu Bunga Filipina'." }
+          ]
+        },
+        myanmar: {
+          name: "Myanmar", flag: "🇲🇲",
+          fauna: [
+            { name: "Owa Hoolock (Hoolock)", desc: "Kera kecil arboreal di hutan dataran tinggi dan rendah." },
+            { name: "Monyet Hidung Pesek Myanmar (Rhinopithecus strykeri)", desc: "Primata unik dengan lubang hidung menghadap ke atas." }
+          ],
+          flora: [
+            { name: "Pohon Padauk (Pterocarpus indicus)", desc: "Pohon berbunga kuning keemasan khas festival tradisional Myanmar." },
+            { name: "Pohon Jati (Tectona grandis)", desc: "Kayu keras tahan lama dunia asal hutan tropis Myanmar." }
+          ]
+        },
+        cambodia: {
+          name: "Cambodia", flag: "🇰🇭",
+          fauna: [
+            { name: "Ibis Raksasa (Thaumatibis gigantea)", desc: "Burung nasional Kamboja, spesies ibis terbesar di dunia." },
+            { name: "Lumba-lumba Irrawaddy (Orcaella brevirostris)", desc: "Populasi lumba-lumba air tawar karismatik di Sungai Mekong." }
+          ],
+          flora: [
+            { name: "Rumdul (Mitrella mesnyi)", desc: "Bunga nasional Kamboja beraroma harum manis malam hari." }
+          ]
+        },
+        laos: {
+          name: "Laos", flag: "🇱🇦",
+          fauna: [
+            { name: "Harimau Indochina & Anjing Hutan Asia", desc: "Predator puncak di pegunungan karst terpencil Laos." },
+            { name: "Tikus Batu Laos (Kha-nyou)", desc: "Spesies hewan pengerat fosil hidup yang ditemukan di tebing karst." }
+          ],
+          flora: [
+            { name: "Dok Champa (Plumeria)", desc: "Bunga nasional Laos lambang ketulusan dan kebahagiaan." }
+          ]
+        },
+        brunei: {
+          name: "Brunei Darussalam", flag: "🇧🇳",
+          fauna: [
+            { name: "Burung Kepala Sikat Borneo (Pityriasis gymnocephala)", desc: "Burung hutan merah khas hutan hujan primer Borneo." },
+            { name: "Macan Dahan Sunda (Neofelis diardi)", desc: "Kucing liar nokturnal tersembunyi di cagar alam." }
+          ],
+          flora: [
+            { name: "Simpor (Dillenia suffruticosa)", desc: "Bunga nasional Brunei dengan kelopak kuning cerah." }
+          ]
+        },
+        singapore: {
+          name: "Singapore", flag: "🇸🇬",
+          fauna: [
+            { name: "Kukang Sunda (Nycticebus coucang)", desc: "Primata nokturnal beracun di kawasan cagar alam Bukit Timah." },
+            { name: "Rangkong Perut Putih (Anthracoceros albirostris)", desc: "Burung enggang adaptif perkotaan yang kembali berkembang di taman lokal." }
+          ],
+          flora: [
+            { name: "Vanda Miss Joaquim", desc: "Anggrek hibrida nasional Singapura simbol ketahanan multikultural." }
+          ]
+        }
+      },
+      vi: {
+        indonesia: {
+          name: "Indonesia", flag: "🇮🇩",
+          fauna: [
+            { name: "Rồng Komodo (Varanus komodoensis)", desc: "Loài thằn lằn lớn nhất còn sống trên Trái Đất, có nguồn gốc từ Indonesia." },
+            { name: "Đười ươi (Pongo)", desc: "Loài linh trưởng lớn thông minh sống trong rừng mưa nhiệt đới." },
+            { name: "Hổ Sumatra (Panthera tigris sumatrae)", desc: "Phân loài hổ nhỏ nhất với các sọc đen đậm." },
+            { name: "Tê giác Java (Rhinoceros sondaicus)", desc: "Một trong những loài thú lớn hiếm nhất thế giới." }
+          ],
+          flora: [
+            { name: "Rafflesia arnoldii", desc: "Loài thực vật ký sinh tạo ra bông hoa đơn lớn nhất thế giới." },
+            { name: "Hoa Thây Ma (Amorphophallus titanum)", desc: "Nổi tiếng với cụm hoa khổng lồ phát ra mùi đặc trưng." }
+          ]
+        },
+        malaysia: {
+          name: "Malaysia", flag: "🇲🇾",
+          fauna: [
+            { name: "Hổ Mã Lai", desc: "Phân loài hổ uy nghi bản địa của Bán đảo Mã Lai." },
+            { name: "Voi lùn Borneo", desc: "Phân loài voi nhỏ nhất ở châu Á." }
+          ],
+          flora: [
+            { name: "Nắp ấm khổng lồ (Nepenthes rajah)", desc: "Loài thực vật ăn thịt đặc hữu." }
+          ]
+        },
+        thailand: {
+          name: "Thailand", flag: "🇹🇭",
+          fauna: [
+            { name: "Voi châu Á", desc: "Động vật biểu tượng quốc gia của Thái Lan." },
+            { name: "Báo hoa mai Đông Dương", desc: "Mèo lớn sống ở các đồi núi có rừng che phủ." }
+          ],
+          flora: [
+            { name: "Hoa Ratchaphruek", desc: "Quốc hoa của Thái Lan với chùm hoa vàng rực rỡ." }
+          ]
+        },
+        vietnam: {
+          name: "Vietnam", flag: "🇻🇳",
+          fauna: [
+            { name: "Sao la", desc: "Còn gọi là kỳ lân châu Á, một trong những loài thú rừng hiếm nhất." },
+            { name: "Chà vá chân đỏ", desc: "Linh trưởng màu sắc sặc sỡ được công nhận là một trong những loài đẹp nhất." }
+          ],
+          flora: [
+            { name: "Hoa Sen", desc: "Quốc hoa của Việt Nam biểu tượng cho sự thanh khiết." },
+            { name: "Cây Tràm", desc: "Cây chịu nước kiên cường ở Đồng bằng sông Cửu Long." }
+          ]
+        },
+        philippines: {
+          name: "Philippines", flag: "🇵🇭",
+          fauna: [
+            { name: "Đại bàng Philippines", desc: "Một trong những loài chim săn mồi lớn nhất và mạnh mẽ nhất thế giới." },
+            { name: "Tamaraw", desc: "Trâu lùn đặc hữu của đảo Mindoro." }
+          ],
+          flora: [
+            { name: "Cây Narra", desc: "Cây quốc gia của Philippines với gỗ cứng và hoa vàng." }
+          ]
+        },
+        myanmar: {
+          name: "Myanmar", flag: "🇲🇲",
+          fauna: [
+            { name: "Vượn Hoolock", desc: "Loài vượn nhỏ sống trên cây trong rừng rậm." }
+          ],
+          flora: [
+            { name: "Cây Padauk", desc: "Cây hoa vàng thơm gắn liền với lễ hội truyền thống Myanmar." }
+          ]
+        },
+        cambodia: {
+          name: "Cambodia", flag: "🇰🇭",
+          fauna: [
+            { name: "Quắm khổng lồ", desc: "Chim quốc gia của Campuchia, loài quắm lớn nhất thế giới." },
+            { name: "Cá heo Irrawaddy", desc: "Quần thể cá heo nước ngọt trên sông Mekong." }
+          ],
+          flora: [
+            { name: "Hoa Rumdul", desc: "Quốc hoa của Campuchia với cánh hoa vàng nhạt thơm ngọt." }
+          ]
+        },
+        laos: {
+          name: "Laos", flag: "🇱🇦",
+          fauna: [
+            { name: "Hổ Đông Dương", desc: "Kẻ săn mồi đỉnh cao ở các vùng núi đá vôi hẻo lánh." }
+          ],
+          flora: [
+            { name: "Hoa Champa", desc: "Quốc hoa của Lào tượng trưng cho sự chân thành và niềm vui." }
+          ]
+        },
+        brunei: {
+          name: "Brunei Darussalam", flag: "🇧🇳",
+          fauna: [
+            { name: "Báo mây Sunda", desc: "Mèo hoang về đêm khó nắm bắt tại các khu bảo tồn rừng." }
+          ],
+          flora: [
+            { name: "Hoa Simpor", desc: "Quốc hoa của Brunei với cánh hoa vàng tươi." }
+          ]
+        },
+        singapore: {
+          name: "Singapore", flag: "🇸🇬",
+          fauna: [
+            { name: "Cu li chậm Sunda", desc: "Linh trưởng có độc sống về đêm." }
+          ],
+          flora: [
+            { name: "Vanda Miss Joaquim", desc: "Hoa lan lai quốc gia của Singapore." }
+          ]
+        }
+      },
+      ms: {
+        indonesia: {
+          name: "Indonesia", flag: "🇮🇩",
+          fauna: [
+            { name: "Biawak Komodo", desc: "Spesies cicak terbesar di dunia asal Indonesia." },
+            { name: "Orangutan", desc: "Kera besar bijak di hutan hujan Borneo dan Sumatra." }
+          ],
+          flora: [
+            { name: "Rafflesia arnoldii", desc: "Tumbuhan parasit menghasilkan bunga terbesar." }
+          ]
+        },
+        malaysia: {
+          name: "Malaysia", flag: "🇲🇾",
+          fauna: [
+            { name: "Harimau Malaya", desc: "Subspesies harimau megah di Semenanjung Malaysia." },
+            { name: "Gajah Kerdil Borneo", desc: "Subspesies gajah terkecil di Asia." }
+          ],
+          flora: [
+            { name: "Periuk Kera Raksasa (Nepenthes rajah)", desc: "Tumbuhan karnivor endemik." }
+          ]
+        },
+        thailand: {
+          name: "Thailand", flag: "🇹🇭",
+          fauna: [
+            { name: "Gajah Asia", desc: "Haiwan kebangsaan Thailand." }
+          ],
+          flora: [
+            { name: "Bunga Ratchaphruek", desc: "Bunga kebangsaan Thailand." }
+          ]
+        },
+        vietnam: {
+          name: "Vietnam", flag: "🇻🇳",
+          fauna: [
+            { name: "Saola", desc: "Dikenali sebagai 'Unicorn Asia'." }
+          ],
+          flora: [
+            { name: "Bunga Teratai", desc: "Bunga kebangsaan Vietnam." }
+          ]
+        },
+        philippines: {
+          name: "Philippines", flag: "🇵🇭",
+          fauna: [
+            { name: "Helang Filipina", desc: "Salah satu burung pemangsa terbesar." }
+          ],
+          flora: [
+            { name: "Pokok Narra", desc: "Pokok kebangsaan Filipina." }
+          ]
+        },
+        myanmar: {
+          name: "Myanmar", flag: "🇲🇲",
+          fauna: [
+            { name: "Gibbon Hoolock", desc: "Kera kecil di hutan." }
+          ],
+          flora: [
+            { name: "Pokok Padauk", desc: "Pokok berbunga kuning harum." }
+          ]
+        },
+        cambodia: {
+          name: "Cambodia", flag: "🇰🇭",
+          fauna: [
+            { name: "Ibis Gergasi", desc: "Burung kebangsaan Kemboja." }
+          ],
+          flora: [
+            { name: "Rumdul", desc: "Bunga kebangsaan Kemboja." }
+          ]
+        },
+        laos: {
+          name: "Laos", flag: "🇱🇦",
+          fauna: [
+            { name: "Harimau Indochina", desc: "Pemangsa di kawasan pergunungan." }
+          ],
+          flora: [
+            { name: "Dok Champa", desc: "Bunga kebangsaan Laos." }
+          ]
+        },
+        brunei: {
+          name: "Brunei Darussalam", flag: "🇧🇳",
+          fauna: [
+            { name: "Harimau Bintang Dahan Sunda", desc: "Kucing liar nokturnal." }
+          ],
+          flora: [
+            { name: "Simpor", desc: "Bunga kebangsaan Brunei." }
+          ]
+        },
+        singapore: {
+          name: "Singapore", flag: "🇸🇬",
+          fauna: [
+            { name: "Kongkang Sunda", desc: "Primata nokturnal beracun." }
+          ],
+          flora: [
+            { name: "Vanda Miss Joaquim", desc: "Orkid hibrid kebangsaan." }
+          ]
+        }
+      },
+      tl: {
+        indonesia: {
+          name: "Indonesia", flag: "🇮🇩",
+          fauna: [
+            { name: "Komodo Dragon", desc: "Ang pinakamalaking butiki sa mundo." },
+            { name: "Orangutan", desc: "Matalinong unggoy sa mga gubat." }
+          ],
+          flora: [
+            { name: "Rafflesia arnoldii", desc: "Halamang may pinakamalaking bulaklak." }
+          ]
+        },
+        malaysia: {
+          name: "Malaysia", flag: "🇲🇾",
+          fauna: [
+            { name: "Malayan Tiger", desc: "Marangal na tigre sa Malaysia." }
+          ],
+          flora: [
+            { name: "Pitcher Plant", desc: "Carnivorous na halaman." }
+          ]
+        },
+        thailand: {
+          name: "Thailand", flag: "🇹🇭",
+          fauna: [
+            { name: "Asian Elephant", desc: "Pambansang hayop ng Thailand." }
+          ],
+          flora: [
+            { name: "Golden Shower Tree", desc: "Pambansang bulaklak." }
+          ]
+        },
+        vietnam: {
+          name: "Vietnam", flag: "🇻🇳",
+          fauna: [
+            { name: "Saola", desc: "Tinatawag na 'Asian Unicorn'." }
+          ],
+          flora: [
+            { name: "Lotus", desc: "Pambansang bulaklak ng Vietnam." }
+          ]
+        },
+        philippines: {
+          name: "Philippines", flag: "🇵🇭",
+          fauna: [
+            { name: "Philippine Eagle", desc: "Isa sa pinakamalaking ibon sa mundo." },
+            { name: "Tamaraw", desc: "Maliit na kalabaw sa Mindoro." }
+          ],
+          flora: [
+            { name: "Narra Tree", desc: "Pambansang puno ng Pilipinas." }
+          ]
+        },
+        myanmar: {
+          name: "Myanmar", flag: "🇲🇲",
+          fauna: [
+            { name: "Hoolock Gibbon", desc: "Maliit na unggoy sa gubat." }
+          ],
+          flora: [
+            { name: "Padauk Tree", desc: "Puno na may dilaw na bulaklak." }
+          ]
+        },
+        cambodia: {
+          name: "Cambodia", flag: "🇰🇭",
+          fauna: [
+            { name: "Giant Ibis", desc: "Pambansang ibon ng Cambodia." }
+          ],
+          flora: [
+            { name: "Rumdul", desc: "Pambansang bulaklak." }
+          ]
+        },
+        laos: {
+          name: "Laos", flag: "🇱🇦",
+          fauna: [
+            { name: "Indochinese Tiger", desc: "Mandaragit sa mga bundok." }
+          ],
+          flora: [
+            { name: "Dok Champa", desc: "Pambansang bulaklak ng Laos." }
+          ]
+        },
+        brunei: {
+          name: "Brunei Darussalam", flag: "🇧🇳",
+          fauna: [
+            { name: "Sunda Clouded Leopard", desc: "Pusa sa gubat." }
+          ],
+          flora: [
+            { name: "Simpor", desc: "Pambansang bulaklak ng Brunei." }
+          ]
+        },
+        singapore: {
+          name: "Singapore", flag: "🇸🇬",
+          fauna: [
+            { name: "Sunda Slow Loris", desc: "Maliit na primata." }
+          ],
+          flora: [
+            { name: "Vanda Miss Joaquim", desc: "Pambansang orchid." }
+          ]
+        }
+      },
+      th: {
+        indonesia: {
+          name: "Indonesia", flag: "🇮🇩",
+          fauna: [
+            { name: "มังกรโคโมโด", desc: "กิ้งก่าที่ใหญ่ที่สุดในโลก ถิ่นกำเนิดในอินโดนีเซีย" },
+            { name: "อุรังอุตัง", desc: "ลิงไม่มีหางฉลาดในป่าฝน" }
+          ],
+          flora: [
+            { name: "Rafflesia arnoldii", desc: "พืชกาฝากดอกไม้ใหญ่ที่สุดในโลก" }
+          ]
+        },
+        malaysia: {
+          name: "Malaysia", flag: "🇲🇾",
+          fauna: [
+            { name: "เสือมลายู", desc: "สายพันธุ์เสือสง่างามในมาเลเซีย" }
+          ],
+          flora: [
+            { name: "หม้อข้าวหม้อแกงลิงยักษ์", desc: "พืชกินแมลงเฉพาะถิ่น" }
+          ]
+        },
+        thailand: {
+          name: "Thailand", flag: "🇹🇭",
+          fauna: [
+            { name: "ช้างเอเชีย", desc: "สัตว์ประจำชาติไทย" }
+          ],
+          flora: [
+            { name: "ดอกราชพฤกษ์", desc: "ดอกไม้ประจำชาติไทย" }
+          ]
+        },
+        vietnam: {
+          name: "Vietnam", flag: "🇻🇳",
+          fauna: [
+            { name: "ซาวลา", desc: "ยูนิคอร์นแห่งเอเชีย สัตว์หายาก" }
+          ],
+          flora: [
+            { name: "ดอกบัว", desc: "ดอกไม้ประจำชาติเวียดนาม" }
+          ]
+        },
+        philippines: {
+          name: "Philippines", flag: "🇵🇭",
+          fauna: [
+            { name: "นกอินทรีฟิลิปปินส์", desc: "นกนักล่าขนาดใหญ่ที่สุดในโลก" }
+          ],
+          flora: [
+            { name: "ต้นนาร์รา", desc: "ต้นไม้ประจำชาติฟิลิปปินส์" }
+          ]
+        },
+        myanmar: {
+          name: "Myanmar", flag: "🇲🇲",
+          fauna: [
+            { name: "ชะนีฮูล็อก", desc: "ลิงไม่มีหางขนาดเล็ก" }
+          ],
+          flora: [
+            { name: "ต้นประดู่", desc: "ไม้ยืนต้นดอกสีเหลืองหอม" }
+          ]
+        },
+        cambodia: {
+          name: "Cambodia", flag: "🇰🇭",
+          fauna: [
+            { name: "นกช้อนหอยยักษ์", desc: "นกประจำชาติกัมพูชา" }
+          ],
+          flora: [
+            { name: "ดอกลำดวน", desc: "ดอกไม้ประจำชาติกัมพูชา" }
+          ]
+        },
+        laos: {
+          name: "Laos", flag: "🇱🇦",
+          fauna: [
+            { name: "เสือโคร่งอินโดจีน", desc: "นักล่าในป่าลึก" }
+          ],
+          flora: [
+            { name: "ดอกจำปา", desc: "ดอกไม้ประจำชาติลาว" }
+          ]
+        },
+        brunei: {
+          name: "Brunei Darussalam", flag: "🇧🇳",
+          fauna: [
+            { name: "เสือลายเมฆซุนดา", desc: "เสือป่าหากินกลางคืน" }
+          ],
+          flora: [
+            { name: "ดอกซิมปอร์", desc: "ดอกไม้ประจำชาติบรูไน" }
+          ]
+        },
+        singapore: {
+          name: "Singapore", flag: "🇸🇬",
+          fauna: [
+            { name: "ลิงลมซุนดา", desc: "ไพรเมตออกหากินกลางคืน" }
+          ],
+          flora: [
+            { name: "แวนด้า มิส ဂျอควิม", desc: "กล้วยไม้ลูกผสมประจำชาติ" }
+          ]
+        }
+      },
+      my: {
+        indonesia: {
+          name: "Indonesia", flag: "🇮🇩",
+          fauna: [
+            { name: "ကိုမိုဒို ပုတ်သင်", desc: "ကမ္ဘာบนတွင် အကြီးဆုံး ပုတ်သင်မျိုးစိတ်" },
+            { name: "အိုရန်အူတန်", desc: "သစ်တောများရှိ ဉာဏ်ကောင်းသော မျောက်ဝံ" }
+          ],
+          flora: [
+            { name: "ရက်ဖ်လီရှား", desc: "အကြီးဆုံး ပန်းပွင့်ကို ထਤ္တပ်သော သစ်ပင်" }
+          ]
+        },
+        malaysia: {
+          name: "Malaysia", flag: "🇲🇾",
+          fauna: [
+            { name: "မလေးရှား ကျား", desc: "မလေးရှားကျွန်းဆွယ်ရှိ ခံ့ညားသောကျား" }
+          ],
+          flora: [
+            { name: "ပိန်းချောက်ပင်", desc: "အထူးသစ်ပင်" }
+          ]
+        },
+        thailand: {
+          name: "Thailand", flag: "🇹🇭",
+          fauna: [
+            { name: "အာရှဆင်", desc: "ထိုင်းနိုင်ငံ၏ အမျိုးသား בעရိယာ" }
+          ],
+          flora: [
+            { name: "ရက်ချာပရွတ် ပန်း", desc: "ထိုင်းနိုင်ငံ၏ အမျိုးသားပန်း" }
+          ]
+        },
+        vietnam: {
+          name: "Vietnam", flag: "🇻🇳",
+          fauna: [
+            { name: "ဆာအိုလာ", desc: "အာရှ ယူနီကွန် ဟုခေါ်သော ရှားပါးသတ္တဝါ" }
+          ],
+          flora: [
+            { name: "ကြာပန်း", desc: "ဗီယက်နမ်နိုင်ငံ၏ အမျိုးသားပန်း" }
+          ]
+        },
+        philippines: {
+          name: "Philippines", flag: "🇵🇭",
+          fauna: [
+            { name: "ဖိလစ်ပိုင် လင်းယုန်", desc: "ကမ္ဘာပေါ်တွင် အကြီးဆုံးနှင့် အ ძင်းဆုံး ငှက်တစ်မျိုး" }
+          ],
+          flora: [
+            { name: "နာရာသစ်ပင်", desc: "ဖိလစ်ပိုင်နိုင်ငံ၏ အမျိုးသားသစ်ပင်" }
+          ]
+        },
+        myanmar: {
+          name: "Myanmar", flag: "🇲🇲",
+          fauna: [
+            { name: "ဟူလော့ မျိုးရင်း နှင်းတောမျောက်", desc: "တောနက်ထဲတွင် ကျက်စားသော မျောက်ငယ်" }
+          ],
+          flora: [
+            { name: "ပိတောက်ပင်", desc: "မြန်မာ့ ঐতিহ্য ရွှေဝါရောင်ပန်းပွင့်သစ်ပင်" }
+          ]
+        },
+        cambodia: {
+          name: "Cambodia", flag: "🇰🇭",
+          fauna: [
+            { name: "ကြီးမားသော စက္ကူငှက်", desc: "ကမ္ဘောဒီးယားနိုင်ငံ၏ အမျိုးသားငှက်" }
+          ],
+          flora: [
+            { name: "ရွန်ဒူး ပန်း", desc: "ကမ္ဘောဒီးယားနိုင်ငံ၏ အမျိုးသားပန်း" }
+          ]
+        },
+        laos: {
+          name: "Laos", flag: "🇱🇦",
+          fauna: [
+            { name: "အင်ဒိုချိုင်းနား ကျား", desc: "တောနက်ထဲရှိ သားကောင်စားသတ္တဝါ" }
+          ],
+          flora: [
+            { name: "စံပယ်ပန်း (ဒေါက်ချမ်ပါ)", desc: "လာအိုနိုင်ငံ၏ အမျိုးသားပန်း" }
+          ]
+        },
+        brunei: {
+          name: "Brunei Darussalam", flag: "🇧🇳",
+          fauna: [
+            { name: "ဆွန်ဒါ တိမ်ဖုံးကျားသစ်", desc: "ညဘက်ကျက်စားသော တောရိုင်းတိရစ္ဆာန်" }
+          ],
+          flora: [
+            { name: "ဆင်ပော် ပန်း", desc: "ဘရူနိုင်းနိုင်ငံ၏ အမျိုးသားပန်း" }
+          ]
+        },
+        singapore: {
+          name: "Singapore", flag: "🇸🇬",
+          fauna: [
+            { name: "ဆွန်ဒါ နှေးကွေးသော လော်ရစ်", desc: "ညဘက်ကျက်စားသော မျောက်ဝံငယ်" }
+          ],
+          flora: [
+            { name: "ဗန်ဒါ မစ်ဂျိုးကင်း", desc: "စင်ကာပူနိုင်ငံ၏ အမျိုးသားသစ်ခွပန်း" }
+          ]
+        }
+      },
+      km: {
+        indonesia: {
+          name: "Indonesia", flag: "🇮🇩",
+          fauna: [
+            { name: "នាគកូម៉ូដូ", desc: "ជីងចក់ធំជាងគេនៅលើពិភពលោក ដែលមានដើមកំណើតនៅឥណ្ឌូនេស៊ី។" },
+            { name: "អូរ៉ាងអូតັງ", desc: " linh trưởngឆ្លាតវៃរស់នៅព្រៃភ្នំ។" }
+          ],
+          flora: [
+            { name: "រ៉ាហ្វ្លេស៊ីយ៉ា", desc: "រុក្ខជាតិប៉ារ៉ាស៊ីតផ្កាធំជាងគេ។" }
+          ]
+        },
+        malaysia: {
+          name: "Malaysia", flag: "🇲🇾",
+          fauna: [
+            { name: "ខ្លា مالaysia", desc: "ខ្លាដ៏អស្ចារ្យនៅឧបទ្វីបម៉ាឡេស៊ី។" }
+          ],
+          flora: [
+            { name: "រុក្ខជាតិស៊ីសាច់", desc: "រុក្ខជាតិស៊ីសាច់ទ្រង់ទ្រាយធំ។" }
+          ]
+        },
+        thailand: {
+          name: "Thailand", flag: "🇹🇭",
+          fauna: [
+            { name: "ដំរីអាស៊ី", desc: "សត្វតំណាងជាតិថៃ។" }
+          ],
+          flora: [
+            { name: "ផ្កា រ៉ាតឆាព្រឹក", desc: "ផ្កាតំណាងជាតិថៃ។" }
+          ]
+        },
+        vietnam: {
+          name: "Vietnam", flag: "🇻🇳",
+          fauna: [
+            { name: "សាវឡា", desc: "ត្រូវបានគេស្គាល់ថាជា 'យូនីខនអាស៊ី'។" }
+          ],
+          flora: [
+            { name: "ផ្កាឈូក", desc: "ផ្កាតំណាងជាតិវៀតណាម។" }
+          ]
+        },
+        philippines: {
+          name: "Philippines", flag: "🇵🇭",
+          fauna: [
+            { name: "ឥន្ទ្រីហ្វីលីពីន", desc: "បក្សីស៊ីសាច់ដ៏ធំបំផុតមួយ។" }
+          ],
+          flora: [
+            { name: "ដើមណារ៉ា", desc: "ដើមឈើជាតិហ្វីលីពីន។" }
+          ]
+        },
+        myanmar: {
+          name: "Myanmar", flag: "🇲🇲",
+          fauna: [
+            { name: "ស្វាហ៊ូឡុក", desc: "ស្វាเล็กរស់នៅព្រៃ។" }
+          ],
+          flora: [
+            { name: "ដើមប៉ាដុក", desc: "ដើមឈើផ្កាពណ៌លឿងក្រអូប។" }
+          ]
+        },
+        cambodia: {
+          name: "Cambodia", flag: "🇰🇭",
+          fauna: [
+            { name: "ត្រโ케이យក្ស", desc: "បក្សីជាតិកម្ពុជា។" }
+          ],
+          flora: [
+            { name: "រំដួល", desc: "ផ្កាជាតិកម្ពុជា។" }
+          ]
+        },
+        laos: {
+          name: "Laos", flag: "🇱🇦",
+          fauna: [
+            { name: "ខ្លាឥណ្ឌូចិន", desc: "សត្វចចកស៊ីសាច់ដ៏គ្រោះថ្នាក់។" }
+          ],
+          flora: [
+            { name: "ផ្កាចំប៉ី", desc: "ផ្កាជាតិឡាវ។" }
+          ]
+        },
+        brunei: {
+          name: "Brunei Darussalam", flag: "🇧🇳",
+          fauna: [
+            { name: "ខ្លាពពកស៊ុនដា", desc: "សត្វព្រៃពេលយប់។" }
+          ],
+          flora: [
+            { name: "ផ្កាស៊ីមព័រ", desc: "ផ្កាជាតិប្រុយណេ។" }
+          ]
+        },
+        singapore: {
+          name: "Singapore", flag: "🇸🇬",
+          fauna: [
+            { name: "លូរីយឺតស៊ុនដា", desc: "សត្វព្រៃពេលយប់។" }
+          ],
+          flora: [
+            { name: "វ៉ាន់ដា មិនស៍ យ៉ូអាគីម", desc: "កំរងផ្កាតំណាងជាតិ។" }
+          ]
+        }
+      },
+      lo: {
+        indonesia: {
+          name: "Indonesia", flag: "🇮🇩",
+          fauna: [
+            { name: "ມັງກອນໂຄໂມໂດ", desc: "ກິ້ງກ່າທີ່ໃຫຍ່ທີ່ສຸດໃນໂລກ ຖິ່ນກຳເນີດຢູ່ອິນໂດເນເຊຍ." },
+            { name: "ລິງອູລັງອຸຕັງ", desc: "ລິງສະຫຼາດອາໄສຢູ່ໃນປ່າດົງດິບ." }
+          ],
+          flora: [
+            { name: "ຣາຟເລເຊຍ", desc: "ພືດກาຝາກທີ່ມີດອກໃຫຍ່ທີ່ສຸດໃນໂລກ." }
+          ]
+        },
+        malaysia: {
+          name: "Malaysia", flag: "🇲🇾",
+          fauna: [
+            { name: "ເສືອມາເລເຊຍ", desc: "ເສືອຊະນິດໃຫຍ່ໃນມາເລເຊຍ." }
+          ],
+          flora: [
+            { name: "ໝໍ້ເຂົ້າໝໍ້ແກງລິງ", desc: "ພືດກິນແມງໄມ້." }
+          ]
+        },
+        thailand: {
+          name: "Thailand", flag: "🇹🇭",
+          fauna: [
+            { name: "ຊ້າງອາຊີ", desc: "ສັດປະຈຳຊາດໄທ." }
+          ],
+          flora: [
+            { name: "ດອກຄູນ", desc: "ດອກໄມ້ປະຈຳຊາດໄທ." }
+          ]
+        },
+        vietnam: {
+          name: "Vietnam", flag: "🇻🇳",
+          fauna: [
+            { name: "ຊາວລາ", desc: "ສັດປ່າหายາກທີ່ຖືກເອີ້ນວ່າຢູນິຄອນແຫ່ງອາຊີ." }
+          ],
+          flora: [
+            { name: "ດອກບົວ", desc: "ດອກໄມ້ປະຈຳຊາດຫວຽດນາມ." }
+          ]
+        },
+        philippines: {
+          name: "Philippines", flag: "🇵🇭",
+          fauna: [
+            { name: "ນກອິນຊີຟິລິບປິນ", desc: "ນກລ່າเหຍື່ອຂະໜາດໃຫຍ່." }
+          ],
+          flora: [
+            { name: "ຕົ້ນນາກຣາ", desc: "ຕົ້ນໄມ້ປະຈຳຊາດຟິລິບປິນ." }
+          ]
+        },
+        myanmar: {
+          name: "Myanmar", flag: "🇲🇲",
+          fauna: [
+            { name: "ຊะນີຮູລັອກ", desc: "ລິງຂະໜາດນ້ອຍໃນປ່າ." }
+          ],
+          flora: [
+            { name: "ຕົ້ນປະດູ່", desc: "ຕົ້ນໄມ້ດອກສີเหลือง." }
+          ]
+        },
+        cambodia: {
+          name: "Cambodia", flag: "🇰🇭",
+          fauna: [
+            { name: "ນກບົວໃຫຍ່", desc: "ນກປະຈຳຊາດກຳປູເຈຍ." }
+          ],
+          flora: [
+            { name: "ດອກລຳດວນ", desc: "ດອກໄມ້ປະຈຳຊາດກຳປູເຈຍ." }
+          ]
+        },
+        laos: {
+          name: "Laos", flag: "🇱🇦",
+          fauna: [
+            { name: "ເສືອໂຄ່ງອິນໂດຈີນ", desc: "ສັດປ່າດຸร้ายໃນປ່າลຶກ." }
+          ],
+          flora: [
+            { name: "ດອກຈຳປາ", desc: "ດອກໄມ້ປະຈຳຊາດລາວ." }
+          ]
+        },
+        brunei: {
+          name: "Brunei Darussalam", flag: "🇧🇳",
+          fauna: [
+            { name: "ເສືອເມກຊຸນດາ", desc: "ເສືອບ່າหากິນກາງຄືນ." }
+          ],
+          flora: [
+            { name: "ດອກຊິມປໍ", desc: "ດອກໄມ້ປະຈຳຊາດບຣູໄນ." }
+          ]
+        },
+        singapore: {
+          name: "Singapore", flag: "🇸🇬",
+          fauna: [
+            { name: "ລິງລໍຣິດຊຸນດາ", desc: "ສັດລ້ຽງลูกด้วยนมອອກหากິນກາງຄືນ." }
+          ],
+          flora: [
+            { name: "ວັນດາ ມິດ ຊໍກິມ", desc: "ດອກກล้วยໄມ້ປະຈຳຊາດ." }
+          ]
+        }
+      }
+    };
+
+    function getBiodiversity(lang, country) {
+      if (biodiversityData[lang] && biodiversityData[lang][country]) {
+        return biodiversityData[lang][country];
+      }
+      return biodiversityData['en'][country];
+    }
+
+    function openCountryModal(countryKey) {
+      activeCountryKey = countryKey;
+      const data = getBiodiversity(currentLanguage, countryKey);
+      if (!data) return;
+
+      document.getElementById('modalCountryFlag').textContent = data.flag;
+      document.getElementById('modalCountryTitle').textContent = data.name;
+
+      let htmlContent = '';
+      
+      htmlContent += `<div class="mb-4"><h4 class="text-sm font-black uppercase tracking-wider text-brandCyan mb-2"><i class="fa-solid fa-paw mr-1"></i> Fauna</h4><ul class="space-y-2">`;
+      data.fauna.forEach(item => {
+        htmlContent += `<li class="bg-slate-50 p-3 rounded-xl border border-slate-200"><strong class="text-brandNavy text-sm">${item.name}</strong><p class="text-xs text-slate-600 mt-0.5">${item.desc}</p></li>`;
+      });
+      htmlContent += `</ul></div>`;
+
+      if (data.flora && data.flora.length > 0) {
+        htmlContent += `<div><h4 class="text-sm font-black uppercase tracking-wider text-brandGreen mb-2"><i class="fa-solid fa-seedling mr-1"></i> Flora</h4><ul class="space-y-2">`;
+        data.flora.forEach(item => {
+          htmlContent += `<li class="bg-slate-50 p-3 rounded-xl border border-slate-200"><strong class="text-brandNavy text-sm">${item.name}</strong><p class="text-xs text-slate-600 mt-0.5">${item.desc}</p></li>`;
+        });
+        htmlContent += `</ul></div>`;
+      }
+
+      document.getElementById('modalContentContainer').innerHTML = htmlContent;
+      document.getElementById('countryModal').classList.remove('hidden');
+      document.body.classList.add('modal-active');
+    }
+
+    function closeCountryModal() {
+      document.getElementById('countryModal').classList.add('hidden');
+      document.body.classList.remove('modal-active');
+      activeCountryKey = '';
+    }
+
+    const translations = {
+      en: {
+        nav_vision: "Our Vision", nav_features: "Features", nav_explore: "Explore Map", nav_partner: "Potential Partner",
+        badge_map: "Interactive ASEAN Biodiversity Map",
+        map_main_title: "Click Country Flags on the Map",
+        map_main_subtitle: "Click directly on the country flags within the ASEAN map below to discover their endemic flora and fauna lists.",
+        click_view: "Click to View",
+        modal_sub: "Complete Biodiversity List (Endemic Flora & Fauna)",
+        close_btn: "Close",
+        footer_tag: "Empowering ASEAN Youth for Biodiversity & Climate Action"
+      },
+      id: {
+        nav_vision: "Visi Kami", nav_features: "Fitur", nav_explore: "Peta Interaktif", nav_partner: "Potensial Mitra",
+        badge_map: "Peta Biodiversitas ASEAN Interaktif",
+        map_main_title: "Klik Bendera Negara di Dalam Peta",
+        map_main_subtitle: "Klik langsung pada bendera negara di dalam peta wilayah ASEAN di bawah ini untuk melihat daftar lengkap flora dan fauna endemiknya.",
+        click_view: "Klik untuk Lihat",
+        modal_sub: "Daftar Lengkap Keanekaragaman Hayati (Flora & Fauna Endemik)",
+        close_btn: "Tutup",
+        footer_tag: "Memberdayakan Pemuda ASEAN untuk Keanekaragaman Hayati & Aksi Iklim"
+      },
+      vi: {
+        nav_vision: "Tầm Nhìn", nav_features: "Tính Năng", nav_explore: "Khám Phá Bản Đồ", nav_partner: "Đối Tác Tiềm Năng",
+        badge_map: "Bản Đồ Đa Dạng Sinh Học ASEAN",
+        map_main_title: "Nhấp Vào Quốc Kỳ Trên Bản Đồ",
+        map_main_subtitle: "Nhấp trực tiếp vào quốc kỳ trên bản đồ ASEAN bên dưới để khám phá danh sách hệ thực vật và động vật đặc hữu.",
+        click_view: "Nhấp để xem",
+        modal_sub: "Danh Sách Đa Dạng Sinh Học Hoàn Chỉnh (Thực Vật & Động Vật)",
+        close_btn: "Đóng",
+        footer_tag: "Trao Quyền Cho Thanh Niên ASEAN Vì Đa Dạng Sinh Học & Khí Hậu"
+      },
+      ms: {
+        nav_vision: "Visi Kami", nav_features: "Ciri-ciri", nav_explore: "Teroka Peta", nav_partner: "Rakan Potensi",
+        badge_map: "Peta Biodiversiti ASEAN Interaktif",
+        map_main_title: "Klik Bendera Negara pada Peta",
+        map_main_subtitle: "Klik terus pada bendera negara di dalam peta ASEAN di bawah untuk melihat senarai flora dan fauna.",
+        click_view: "Klik untuk Lihat",
+        modal_sub: "Senarai Biodiversiti Lengkap (Flora & Fauna Endemik)",
+        close_btn: "Tutup",
+        footer_tag: "Memperkasakan Belia ASEAN untuk Biodiversiti & Aksi Iklim"
+      },
+      tl: {
+        nav_vision: "Aming Pananaw", nav_features: "Mga Tampok", nav_explore: "Galugarin ang Mapa", nav_partner: "Potensyal na Kasosyo",
+        badge_map: "Interactive ASEAN Biodiversity Map",
+        map_main_title: "I-click ang mga Bandera ng Bansa sa Mapa",
+        map_main_subtitle: "I-click nang direkta ang mga bandera sa loob ng mapa ng ASEAN upang makita ang listahan ng flora at fauna.",
+        click_view: "I-click para Makita",
+        modal_sub: "Buong Listahan ng Biodiversidad (Endemic Flora & Fauna)",
+        close_btn: "Isara",
+        footer_tag: "Pagpapalakas sa Kabataan ng ASEAN para sa Biodiversidad"
+      },
+      th: {
+        nav_vision: "วิสัยทัศน์", nav_features: "คุณสมบัติ", nav_explore: "สำรวจแผนที่", nav_partner: "ผู้สนับสนุนศักยภาพ",
+        badge_map: "แผนที่ความหลากหลายทางชีวภาพอาเซียน",
+        map_main_title: "คลิกธงชาติบนแผนที่",
+        map_main_subtitle: "คลิกโดยตรงที่ธงชาติภายในแผนที่อาเซียนด้านล่างเพื่อดูรายชื่อพืชและสัตว์ประจำถิ่น",
+        click_view: "คลิกเพื่อดู",
+        modal_sub: "รายการความหลากหลายทางชีวภาพที่สมบูรณ์ (พืชและสัตว์ประจำถิ่น)",
+        close_btn: "ปิด",
+        footer_tag: "เสริมพลังเยาวชนอาเซียนเพื่อความหลากหลายทางชีวภาพ"
+      },
+      my: {
+        nav_vision: "ကျွန်ုပ်တို့၏မျှော်မှန်းချက်", nav_features: "အင်္ဂါရပ်များ", nav_explore: "မြေပုံကြည့်ရန်", nav_partner: "မိတ်ဖက်အလားအလာ",
+        badge_map: "အာဆီယံ ဇီဝမျိုးစုံမျိုးကွဲ မြေပုံ",
+        map_main_title: "မြေပုံပေါ်ရှိ နိုင်ငံအလံများကို နှိပ်ပါ",
+        map_main_subtitle: "အာဆီယံမြေပုံပေါ်ရှိ နိုင်ငံအလံများကို တိုက်ရိုက်နှိပ်၍ သစ်ပင်နှင့် တိရစ္ဆာန်စာရင်းများကို ကြည့်ရှုပါ။",
+        click_view: "ကြည့်ရန်နှိပ်ပါ",
+        modal_sub: "ဇီဝမျိုးစုံမျိုးကွဲ စာရင်းအပြည့်အစုံ",
+        close_btn: "ပိတ်ရန်",
+        footer_tag: "အာဆီယံ လူငယ်များ သဘာဝပတ်ဝန်းကျင် ထိန်းသိမ်းရေး"
+      },
+      km: {
+        nav_vision: "ចក្ខុវិស័យ", nav_features: "លក្ខណៈពិសេស", nav_explore: "រុករកផែនទី", nav_partner: "ដៃគូសក្តានុពល",
+        badge_map: "ផែនទីជីវចម្រុះអាស៊ានអន្តរកម្ម",
+        map_main_title: "ចុចលើទង់ជាតិនៃប្រទេសនៅលើផែនទី",
+        map_main_subtitle: "ចុចផ្ទាល់លើទង់ជាតិក្នុងផែនទីអាស៊ានខាងក្រោមដើម្បីមើលបញ្ជីរុក្ខជាតិ និងសត្វព្រៃ។",
+        click_view: "ចុចដើម្បីមើល",
+        modal_sub: "បញ្ជីជីវចម្រុះពេញលេញ",
+        close_btn: "បិទ",
+        footer_tag: "ផ្តល់អំណាចដល់យុវជនអាស៊ានដើម្បីជីវចម្រុះ"
+      },
+      lo: {
+        nav_vision: "ວິໄສທັດຂອງພວກເຮົາ", nav_features: "ຄຸນສົມບັດ", nav_explore: "ສຳຫຼວດແຜນທີ່", nav_partner: "ຄູ່ຮ່ວມມືທີ່ມີທ່າແຮງ",
+        badge_map: "ແຜນທີ່ຊີວະນາໆພັນອາຊຽນ",
+        map_main_title: "ກົດໃສ່ທຸງຊາດເທິງແຜນທີ່",
+        map_main_subtitle: "ກົດໂດຍົງໃສ່ທຸງຊາດໃນແຜນທີ່ອາຊຽນດ້ານລຸ່ມນີ້ເພື່ອເບິ່ງລາຍຊື່ພືດ ແລະ ສັດ.",
+        click_view: "ກົດເພື່ອເບິ່ງ",
+        modal_sub: "ລາຍຊື່ຊີວະນາໆພັນ",
+        close_btn: "ປິດ",
+        footer_tag: "ສ້າງພະລັງໃຫ້ເຍົາວະຊົນອາຊຽນເພື່ອຊີວະນາໆພັນ"
+      }
+    };
+
+    function changeLanguage(lang) {
+      currentLanguage = lang;
+      
+      const langSelect = document.getElementById('langSelect');
+      const mobileLangSelect = document.getElementById('mobileLangSelect');
+      if (langSelect) langSelect.value = lang;
+      if (mobileLangSelect) mobileLangSelect.value = lang;
+
+      const data = translations[lang] || translations['en'];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (data[key]) el.textContent = data[key];
+      });
+
+      if (activeCountryKey) {
+        openCountryModal(activeCountryKey);
+      }
+    }
+  </script>
+</body>
+</html>

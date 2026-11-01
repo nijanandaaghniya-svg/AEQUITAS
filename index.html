@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aequitas - ASEAN Biodiversity Platform</title>
+  
+  <!-- Tailwind CSS & FontAwesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts for UI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandNavy: '#121858',
+            brandCyan: '#429EBD',
+            brandGreen: '#63D485',
+            brandYellow: '#F4F9A6',
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    .modal-active {
+      overflow: hidden;
+    }
+    @keyframes bounce-gentle {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .animate-bounce-gentle {
+      animation: bounce-gentle 2s infinite;
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- ==================== NAVIGATION BAR ==================== -->
+  <nav class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- BRAND LOGO -->
+        <div class="flex items-center space-x-3">
+          <img src="logo.jpeg" alt="Logo" class="h-10 sm:h-12 w-auto object-contain">
+          <img src="fontremoved.png" alt="Font Text" class="h-7 sm:h-9 w-auto object-contain">
+        </div>
+
+        <!-- Desktop Navigation Links -->
+        <div class="hidden md:flex items-center space-x-6 text-sm font-semibold text-slate-700">
+          <a href="#vision" class="hover:text-brandCyan transition-colors" data-i18n="nav_vision">Our Vision</a>
+          <a href="#indicators" class="hover:text-brandCyan transition-colors" data-i18n="nav_features">Features</a>
+          <a href="map.html" class="hover:text-brandCyan transition-colors" data-i18n="nav_explore">Explore Map</a>
+          <a href="#partner" class="px-4 py-2 rounded-full bg-brandNavy text-white hover:bg-brandCyan transition-all shadow-md font-bold" data-i18n="nav_partner">
+            Potential Partner
+          </a>
+
+          <!-- ASEAN Language Selector Dropdown -->
+          <div class="relative inline-block text-left">
+            <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-slate-100 text-slate-700 font-medium text-xs rounded-lg px-3 py-2 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brandCyan cursor-pointer">
+              <option value="en">🇬🇧 English (Default)</option>
+              <option value="id">🇮🇩 Bahasa Indonesia</option>
+              <option value="vi">🇻🇳 Tiếng Việt</option>
+              <option value="ms">🇲🇾 Bahasa Melayu</option>
+              <option value="tl">🇵🇭 Tagalog</option>
+              <option value="th">🇹🇭 ภาษาไทย</option>
+              <option value="my">🇲🇲 မြန်မာဘာသာ</option>
+              <option value="km">🇰🇭 ភាសាខ្មែរ</option>
+              <option value="lo">🇱🇦 ພາສາລາວ</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <div class="md:hidden flex items-center space-x-2">
+          <select id="mobileLangSelect" onchange="changeLanguage(this.value)" class="bg-slate-100 text-xs rounded-md px-2 py-1 border border-slate-300">
+            <option value="en">🇬🇧 EN</option>
+            <option value="id">🇮🇩 ID</option>
+            <option value="vi">🇻🇳 VI</option>
+            <option value="ms">🇲🇾 MS</option>
+            <option value="tl">🇵🇭 TL</option>
+            <option value="th">🇹🇭 TH</option>
+            <option value="my">🇲🇲 MY</option>
+            <option value="km">🇰🇭 KM</option>
+            <option value="lo">🇱🇦 LO</option>
+          </select>
+          <button onclick="toggleMobileMenu()" class="text-slate-700 hover:text-brandNavy p-2 focus:outline-none">
+            <i class="fa-solid fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-4 space-y-2">
+      <a href="#vision" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 hover:text-brandCyan font-medium" data-i18n="nav_vision">Our Vision</a>
+      <a href="#indicators" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 hover:text-brandCyan font-medium" data-i18n="nav_features">Features</a>
+      <a href="map.html" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 hover:text-brandCyan font-medium" data-i18n="nav_explore">Explore Map</a>
+      <a href="#partner" onclick="toggleMobileMenu()" class="block py-2 font-bold text-brandNavy hover:text-brandCyan" data-i18n="nav_partner">Potential Partner</a>
+    </div>
+  </nav>
+
+  <!-- ==================== HERO / HEADER SECTION ==================== -->
+  <header class="relative bg-brandNavy text-white overflow-hidden shadow-xl transition-all duration-500">
+    <div id="headerBgImage" class="absolute inset-0 bg-cover bg-center transition-all duration-700 opacity-40 scale-105" style="background-image: url('https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=1600&auto=format&fit=crop');"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-brandNavy via-brandNavy/80 to-brandNavy/40"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+      <div class="max-w-2xl space-y-6">
+        <div class="inline-flex items-center space-x-2 bg-white/15 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold text-brandYellow border border-white/20 shadow-sm">
+          <i class="fa-solid fa-leaf text-brandGreen"></i>
+          <span data-i18n="hero_badge">Empowering Youth Across ASEAN</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight" data-i18n="hero_title">
+          ASEAN Biodiversity Literacy for Youth
+        </h1>
+
+        <p class="text-lg text-slate-200 leading-relaxed font-medium" data-i18n="hero_subtitle">
+          Interactive micro-learning, gamified education, and ASEAN biodiversity mapping designed to protect our natural ecosystems.
+        </p>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap gap-4 pt-2">
+          <button onclick="openModal('modalLaunch')" class="px-7 py-3.5 rounded-xl bg-brandGreen text-brandNavy font-bold shadow-lg hover:bg-brandYellow hover:scale-105 transition-all flex items-center space-x-2">
+            <i class="fa-solid fa-rocket"></i>
+            <span data-i18n="btn_launch">Launch Platform</span>
+          </button>
+          <button onclick="openBrowseModules()" class="px-7 py-3.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/30 text-white font-bold hover:bg-white/20 hover:scale-105 transition-all flex items-center space-x-2">
+            <i class="fa-solid fa-compass"></i>
+            <span data-i18n="btn_browse">Browse Modules</span>
+          </button>
+          <button onclick="openGameModal()" class="px-7 py-3.5 rounded-xl bg-brandCyan text-white font-bold shadow-lg hover:bg-cyan-400 hover:scale-105 transition-all flex items-center space-x-2">
+            <i class="fa-solid fa-gamepad"></i>
+            <span data-i18n="btn_play">Play Eco Game</span>
+          </button>
+        </div>
+
+        <!-- Custom Header Image Switcher Control -->
+        <div class="pt-8 border-t border-white/10 flex flex-wrap items-center gap-3 text-xs text-slate-300">
+          <span class="font-semibold text-brandYellow" data-i18n="header_customizer"><i class="fa-solid fa-image"></i> Change Header Image:</span>
+          <button onclick="resetHeaderBg()" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded border border-white/20 font-semibold" data-i18n="btn_bg_default">Default (Navy)</button>
+          <button onclick="changeHeaderBg('https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=1600&auto=format&fit=crop')" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded border border-white/20" data-i18n="btn_bg_forest">Forest</button>
+          <button onclick="changeHeaderBg('https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=1600&auto=format&fit=crop')" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded border border-white/20" data-i18n="btn_bg_marine">Marine (Scuba Diver)</button>
+          <button onclick="changeHeaderBg('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop')" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded border border-white/20" data-i18n="btn_bg_coastal">Coastal (Beach)</button>
+          <label class="px-2.5 py-1 bg-brandCyan text-white hover:bg-cyan-600 rounded cursor-pointer font-bold transition-colors">
+            <i class="fa-solid fa-upload mr-1"></i> <span data-i18n="btn_bg_upload">Upload Custom</span>
+            <input type="file" accept="image/*" class="hidden" onchange="uploadHeaderBg(event)">
+          </label>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== INDICATORS SECTION ==================== -->
+  <section id="indicators" class="py-16 bg-white border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <h2 class="text-3xl font-extrabold text-brandNavy" data-i18n="features_title">Key Pillars & Indicators</h2>
+        <p class="text-slate-600 mt-2 font-medium" data-i18n="features_subtitle">Core values driving our environmental movement forward</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="p-6 rounded-2xl bg-gradient-to-br from-[#F4F9A6]/20 to-emerald-50 border border-brandGreen/30 hover:shadow-xl transition-all">
+          <div class="w-12 h-12 rounded-xl bg-brandGreen text-brandNavy flex items-center justify-center text-xl font-bold mb-4 shadow"><i class="fa-solid fa-globe"></i></div>
+          <h3 class="text-xl font-bold text-brandNavy mb-2" data-i18n="pillar_1_title">ASEAN Biodiversity Focus</h3>
+          <p class="text-slate-600 text-sm leading-relaxed" data-i18n="pillar_1_desc">Tailored specifically to Southeast Asia’s rich endemic species and fragile tropical biomes.</p>
+        </div>
+
+        <div id="explore" class="p-6 rounded-2xl bg-gradient-to-br from-cyan-50 to-blue-50 border border-brandCyan/30 hover:shadow-xl transition-all">
+          <div class="w-12 h-12 rounded-xl bg-brandCyan text-white flex items-center justify-center text-xl font-bold mb-4 shadow"><i class="fa-solid fa-map-location-dot"></i></div>
+          <h3 class="text-xl font-bold text-brandNavy mb-2" data-i18n="pillar_2_title">Interactive Biodiversity Map</h3>
+          <p class="text-slate-600 text-sm leading-relaxed" data-i18n="pillar_2_desc">Explore regional wildlife hotspots, protected reserves, and ecosystem metrics in real-time.</p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-gradient-to-br from-yellow-50 to-amber-50 border border-amber-200 hover:shadow-xl transition-all cursor-pointer hover:border-amber-400" onclick="openBrowseModules()">
+          <div class="w-12 h-12 rounded-xl bg-amber-400 text-brandNavy flex items-center justify-center text-xl font-bold mb-4 shadow"><i class="fa-solid fa-book-open"></i></div>
+          <h3 class="text-xl font-bold text-brandNavy mb-2" data-i18n="pillar_3_title">Micro-Learning Content</h3>
+          <p class="text-slate-600 text-sm leading-relaxed"><span data-i18n="pillar_3_desc">Bite-sized, digestible lessons tailored for youth and classroom participation.</span> <span class="text-brandCyan font-bold block mt-1" data-i18n="click_open_modules">Click to open 5 Modules &rarr;</span></p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 hover:shadow-xl transition-all">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xl font-bold mb-4 shadow"><i class="fa-solid fa-gamepad"></i></div>
+          <h3 class="text-xl font-bold text-brandNavy mb-2" data-i18n="pillar_4_title">Education & Interactive Games</h3>
+          <p class="text-slate-600 text-sm leading-relaxed" data-i18n="pillar_4_desc">Gamified learning paths that turn complex ecological concepts into engaging quests.</p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-gradient-to-br from-indigo-50 to-slate-50 border border-indigo-200 hover:shadow-xl transition-all lg:col-span-2">
+          <div class="w-12 h-12 rounded-xl bg-brandNavy text-brandYellow flex items-center justify-center text-xl font-bold mb-4 shadow"><i class="fa-solid fa-graduation-cap"></i></div>
+          <h3 class="text-xl font-bold text-brandNavy mb-2" data-i18n="pillar_5_title">Focus on Biodiversity Literacy</h3>
+          <p class="text-slate-600 text-sm leading-relaxed" data-i18n="pillar_5_desc">Empowering the next generation with environmental knowledge and conservation mindsets.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== OUR VISION & PILLARS ==================== -->
+  <section id="vision" class="py-20 bg-gradient-to-b from-slate-50 via-[#63D485]/10 to-slate-50 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="glass-card rounded-3xl p-8 lg:p-12 shadow-xl border border-white text-center max-w-4xl mx-auto mb-16">
+        <span class="px-4 py-1.5 rounded-full bg-brandGreen/30 text-brandNavy font-extrabold text-sm uppercase tracking-wider mb-4 inline-block" data-i18n="our_vision_tag">OUR VISION</span>
+        <blockquote class="text-xl sm:text-2xl font-bold text-brandNavy leading-relaxed italic" data-i18n="vision_quote">
+          "To empower young people across ASEAN with accessible biodiversity education that builds environmental literacy, encourages active participation, and inspires them to care for and protect the natural world."
+        </blockquote>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-3xl p-8 shadow-lg border-t-8 border-rose-500 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-2xl font-black text-rose-600 tracking-wide" data-i18n="p_innovate">INNOVATE</h3>
+              <div class="w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-lg font-bold">1</div>
+            </div>
+            <ul class="space-y-3 text-slate-700 text-sm font-medium">
+              <li><i class="fa-solid fa-circle-check text-rose-500 mr-2"></i> <span data-i18n="innovate_1">Create inclusive digital platform.</span></li>
+              <li><i class="fa-solid fa-circle-check text-rose-500 mr-2"></i> <span data-i18n="innovate_2">Build interactive website.</span></li>
+              <li><i class="fa-solid fa-circle-check text-rose-500 mr-2"></i> <span data-i18n="innovate_3">Make biodiversity education accessible.</span></li>
+            </ul>
+          </div>
+          <div class="pt-6 mt-6 border-t border-slate-100 flex gap-2">
+            <span class="px-3 py-1 bg-rose-600 text-white font-bold text-xs rounded-lg">SDG 4</span>
+            <span class="px-3 py-1 bg-orange-600 text-white font-bold text-xs rounded-lg">SDG 5</span>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 shadow-lg border-t-8 border-amber-400 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-2xl font-black text-amber-500 tracking-wide" data-i18n="p_involve">INVOLVE</h3>
+              <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-lg font-bold">2</div>
+            </div>
+            <ul class="space-y-3 text-slate-700 text-sm font-medium">
+              <li><i class="fa-solid fa-circle-check text-amber-500 mr-2"></i> <span data-i18n="involve_1">Engage Youth actively across ASEAN.</span></li>
+              <li><i class="fa-solid fa-circle-check text-amber-500 mr-2"></i> <span data-i18n="involve_2">Create Immersive learning experiences.</span></li>
+              <li><i class="fa-solid fa-circle-check text-amber-500 mr-2"></i> <span data-i18n="involve_3">Extend Education beyond the classroom.</span></li>
+            </ul>
+          </div>
+          <div class="pt-6 mt-6 border-t border-slate-100">
+            <span class="px-3 py-1 bg-amber-500 text-white font-bold text-xs rounded-lg">SDG 7</span>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 shadow-lg border-t-8 border-brandCyan flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-2xl font-black text-brandCyan tracking-wide" data-i18n="p_impact">IMPACT</h3>
+              <div class="w-10 h-10 rounded-full bg-cyan-100 text-brandCyan flex items-center justify-center text-lg font-bold">3</div>
+            </div>
+            <ul class="space-y-3 text-slate-700 text-sm font-medium">
+              <li><i class="fa-solid fa-circle-check text-brandCyan mr-2"></i> <span data-i18n="impact_1">Inspire active youth participation.</span></li>
+              <li><i class="fa-solid fa-circle-check text-brandCyan mr-2"></i> <span data-i18n="impact_2">Turn knowledge into meaningful action.</span></li>
+              <li><i class="fa-solid fa-circle-check text-brandCyan mr-2"></i> <span data-i18n="impact_3">Foster conservation action.</span></li>
+            </ul>
+          </div>
+          <div class="pt-6 mt-6 border-t border-slate-100 flex gap-2">
+            <span class="px-3 py-1 bg-blue-600 text-white font-bold text-xs rounded-lg">SDG 14</span>
+            <span class="px-3 py-1 bg-emerald-600 text-white font-bold text-xs rounded-lg">SDG 15</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== POTENTIAL PARTNER ==================== -->
+  <section id="partner" class="py-20 bg-brandNavy text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <span class="text-brandGreen font-bold uppercase tracking-wider text-sm" data-i18n="partner_sub">Collaborate With Us</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold mt-2 mb-6" data-i18n="partner_title">Become a Potential Partner</h2>
+          <p class="text-slate-300 mb-6 leading-relaxed" data-i18n="partner_desc">
+            We invite environmental NGOs, educational institutions, youth movements, and corporate sustainability partners to join forces in expanding ASEAN biodiversity literacy.
+          </p>
+          <div class="space-y-4">
+            <div class="flex items-center space-x-3"><div class="w-8 h-8 rounded-full bg-brandGreen/20 text-brandGreen flex items-center justify-center"><i class="fa-solid fa-check"></i></div><span data-i18n="partner_check_1">Co-create micro-learning modules & curriculum</span></div>
+            <div class="flex items-center space-x-3"><div class="w-8 h-8 rounded-full bg-brandGreen/20 text-brandGreen flex items-center justify-center"><i class="fa-solid fa-check"></i></div><span data-i18n="partner_check_2">Sponsor youth eco-campaigns & interactive games</span></div>
+          </div>
+        </div>
+
+        <div class="bg-white text-slate-800 p-8 rounded-3xl shadow-2xl">
+          <h3 class="text-2xl font-bold text-brandNavy mb-4" data-i18n="form_title">Partner Application</h3>
+          <form onsubmit="handlePartnerSubmit(event)" class="space-y-4">
+            <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1" data-i18n="form_org">Organization Name</label><input type="text" required placeholder="e.g. ASEAN Green Initiative" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brandCyan focus:outline-none"></div>
+            <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1" data-i18n="form_email">Email Address</label><input type="email" required placeholder="partner@organization.org" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brandCyan focus:outline-none"></div>
+            <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1" data-i18n="form_type">Partnership Type</label>
+              <select class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brandCyan focus:outline-none">
+                <option>Educational Institution</option><option>NGO / Non-Profit</option><option>Government / ASEAN Body</option><option>Corporate Partner</option>
+              </select>
+            </div>
+            <button type="submit" class="w-full py-4 rounded-xl bg-brandGreen text-brandNavy font-bold hover:bg-brandYellow transition-colors shadow-lg" data-i18n="form_btn">Submit Partner Request</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 text-center sm:flex sm:justify-between sm:items-center">
+      <div class="flex items-center justify-center sm:justify-start space-x-2">
+        <img src="fontremoved.png" alt="AEQUITAS" class="h-5 w-auto object-contain brightness-200">
+        <span class="text-xs">&copy; 2026. All rights reserved.</span>
+      </div>
+      <p class="text-xs mt-2 sm:mt-0" data-i18n="footer_tag">Empowering ASEAN Youth for Biodiversity & Climate Action</p>
+    </div>
+  </footer>
+
+  <!-- ==================== POP-UP MODALS ==================== -->
+  <div id="modalLaunch" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl relative">
+      <button onclick="closeModal('modalLaunch')" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center"><i class="fa-solid fa-xmark text-lg"></i></button>
+      <div class="text-center">
+        <div class="w-16 h-16 bg-emerald-100 text-brandGreen rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="fa-solid fa-rocket"></i></div>
+        <h3 class="text-2xl font-bold text-brandNavy mb-2" data-i18n="launch_modal_title">Platform Ready!</h3>
+        <p class="text-slate-600 text-sm mb-6" data-i18n="launch_modal_desc">Welcome to the Aequitas Biodiversity Dashboard. All 10 ASEAN regional data streams are live.</p>
+        <button onclick="closeModal('modalLaunch')" class="w-full py-3 bg-brandNavy text-white rounded-xl font-bold" data-i18n="launch_modal_btn">Enter Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BROWSE MODULES MODAL -->
+  <div id="modalBrowse" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeModal('modalBrowse')" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+      <h3 class="text-2xl font-bold text-brandNavy mb-2 flex items-center">
+        <i class="fa-solid fa-book-open text-brandCyan mr-2"></i> <span data-i18n="browse_modal_title">Micro-Learning Modules</span>
+      </h3>
+      <p class="text-xs text-slate-500 mb-6" data-i18n="browse_modal_sub">Select one of the 5 modules below to explore ASEAN biodiversity interactively:</p>
+      
+      <div class="space-y-3">
+        <!-- Modul 1 -->
+        <div onclick="openModuleDetail(1)" class="p-4 rounded-xl border border-slate-200 hover:border-brandCyan hover:bg-cyan-50/40 transition-all cursor-pointer flex justify-between items-center group">
+          <div>
+            <h4 class="font-bold text-slate-800 group-hover:text-brandCyan transition-colors" data-i18n="mod_1_title">Module 1: Rain Forest Endemic Species</h4>
+            <p class="text-xs text-slate-500" data-i18n="mod_1_sub">Hornbills, Orangutans, and Canopy Ecosystems</p>
+          </div>
+          <span class="text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full"><span data-i18n="mod_1_time">5 mins</span> <i class="fa-solid fa-chevron-right ml-1"></i></span>
+        </div>
+
+        <!-- Modul 2 -->
+        <div onclick="openModuleDetail(2)" class="p-4 rounded-xl border border-slate-200 hover:border-brandCyan hover:bg-cyan-50/40 transition-all cursor-pointer flex justify-between items-center group">
+          <div>
+            <h4 class="font-bold text-slate-800 group-hover:text-brandCyan transition-colors" data-i18n="mod_2_title">Module 2: Marine Life & Coral Triangle</h4>
+            <p class="text-xs text-slate-500" data-i18n="mod_2_sub">Sea Turtles, Coral Reefs, and Coastal Conservation</p>
+          </div>
+          <span class="text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full"><span data-i18n="mod_2_time">7 mins</span> <i class="fa-solid fa-chevron-right ml-1"></i></span>
+        </div>
+
+        <!-- Modul 3 -->
+        <div onclick="openModuleDetail(3)" class="p-4 rounded-xl border border-slate-200 hover:border-brandCyan hover:bg-cyan-50/40 transition-all cursor-pointer flex justify-between items-center group">
+          <div>
+            <h4 class="font-bold text-slate-800 group-hover:text-brandCyan transition-colors" data-i18n="mod_3_title">Module 3: Mangrove Ecosystems in ASEAN</h4>
+            <p class="text-xs text-slate-500" data-i18n="mod_3_sub">Blue Carbon, Mangrove Crabs, and Coastal Protection</p>
+          </div>
+          <span class="text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full"><span data-i18n="mod_3_time">6 mins</span> <i class="fa-solid fa-chevron-right ml-1"></i></span>
+        </div>
+
+        <!-- Modul 4 -->
+        <div onclick="openModuleDetail(4)" class="p-4 rounded-xl border border-slate-200 hover:border-brandCyan hover:bg-cyan-50/40 transition-all cursor-pointer flex justify-between items-center group">
+          <div>
+            <h4 class="font-bold text-slate-800 group-hover:text-brandCyan transition-colors" data-i18n="mod_4_title">Module 4: Endangered Wildlife Protection</h4>
+            <p class="text-xs text-slate-500" data-i18n="mod_4_sub">Sumatran Tigers, Asian Elephants, and Anti-Poaching</p>
+          </div>
+          <span class="text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full"><span data-i18n="mod_4_time">8 mins</span> <i class="fa-solid fa-chevron-right ml-1"></i></span>
+        </div>
+
+        <!-- Modul 5 -->
+        <div onclick="openModuleDetail(5)" class="p-4 rounded-xl border border-slate-200 hover:border-brandCyan hover:bg-cyan-50/40 transition-all cursor-pointer flex justify-between items-center group">
+          <div>
+            <h4 class="font-bold text-slate-800 group-hover:text-brandCyan transition-colors" data-i18n="mod_5_title">Module 5: Youth Climate & SDG Action</h4>
+            <p class="text-xs text-slate-500" data-i18n="mod_5_sub">SDG 14, SDG 15, and Community Green Movements</p>
+          </div>
+          <span class="text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full"><span data-i18n="mod_5_time">5 mins</span> <i class="fa-solid fa-chevron-right ml-1"></i></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DETAIL SPESIFIK UNTUK TIAP MODUL -->
+  <div id="modalModuleDetail" class="fixed inset-0 z-50 hidden bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative border-4 border-brandCyan max-h-[88vh] flex flex-col justify-between">
+      
+      <button onclick="closeModuleDetail()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="text-center mb-4 flex-shrink-0">
+        <span id="detailModuleBadge" class="px-3 py-1 bg-cyan-100 text-brandCyan text-xs font-extrabold rounded-full uppercase tracking-wider">Module Detail</span>
+        <h3 id="detailModuleTitle" class="text-2xl font-extrabold text-brandNavy mt-2">Title</h3>
+      </div>
+
+      <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 mb-6 overflow-y-auto max-h-[50vh] text-sm text-slate-700 space-y-4 shadow-inner">
+        <div id="detailModuleDesc" class="leading-relaxed space-y-3">
+          <!-- Diisi lengkap via JavaScript -->
+        </div>
+      </div>
+
+      <div class="flex gap-3 flex-shrink-0">
+        <button onclick="closeModuleDetail(); openBrowseModules();" class="flex-1 py-3 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 transition-colors text-sm" data-i18n="btn_back_list">
+          &larr; Back to List
+        </button>
+        <button onclick="completeModule()" class="flex-1 py-3 rounded-xl bg-brandGreen text-brandNavy font-bold hover:bg-brandYellow transition-colors shadow-md text-sm" data-i18n="btn_complete">
+          Complete Learning ✨
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ECO GAME MODAL -->
+  <div id="modalGame" class="fixed inset-0 z-50 hidden bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-8 shadow-2xl relative border-4 border-brandGreen overflow-hidden">
+      <button onclick="closeGameModal()" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+      
+      <!-- GAME CONTAINER -->
+      <div id="gameMainContainer" class="text-center">
+        <div class="flex items-center justify-between mb-2">
+          <span id="gameProgressText" class="px-3 py-1 bg-brandYellow font-extrabold text-brandNavy text-xs rounded-full uppercase tracking-wider">Question 1 of 10</span>
+          <span id="audioStatusIndicator" class="text-xs px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full font-semibold animate-pulse"><i class="fa-solid fa-music"></i> BGM Playing</span>
+        </div>
+        
+        <h3 class="text-2xl font-extrabold text-brandNavy mb-1" data-i18n="game_title">Eco-Sorting Challenge</h3>
+        <p class="text-slate-600 text-xs mb-4" data-i18n="game_subtitle">Classify the habitat of this species correctly!</p>
+
+        <div id="gameCard" class="bg-gradient-to-br from-slate-50 to-emerald-50 p-6 rounded-2xl border-2 border-dashed border-brandGreen mb-6 min-h-[160px] flex flex-col items-center justify-center">
+          <div id="gameItemIcon" class="text-5xl mb-2">🐢</div>
+          <h4 id="gameItemTitle" class="text-xl font-bold text-slate-800">Sea Turtle Habitat</h4>
+          <p id="gameItemDesc" class="text-xs text-slate-500 mt-1">Marine Life or Forest Biome?</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <button onclick="playGameAnswer('marine')" class="py-3.5 rounded-xl bg-brandCyan text-white font-bold hover:bg-cyan-600 transition-all flex items-center justify-center space-x-2 shadow-md hover:scale-102">
+            <i class="fa-solid fa-water"></i>
+            <span data-i18n="btn_marine_life">Marine Life</span>
+          </button>
+          <button onclick="playGameAnswer('forest')" class="py-3.5 rounded-xl bg-brandGreen text-brandNavy font-bold hover:bg-emerald-400 transition-all flex items-center justify-center space-x-2 shadow-md hover:scale-102">
+            <i class="fa-solid fa-tree"></i>
+            <span data-i18n="btn_forest_biome">Forest Biome</span>
+          </button>
+        </div>
+
+        <div id="gameFeedback" class="mt-4 font-bold text-sm h-6"></div>
+      </div>
+
+      <!-- KADO / GIFT BOX VIEW -->
+      <div id="giftBoxContainer" class="hidden text-center py-6">
+        <h3 class="text-2xl font-extrabold text-brandNavy mb-2" data-i18n="perfect_score_title">🎉 Perfect Score! 🎉</h3>
+        <p class="text-slate-600 text-sm mb-6" data-i18n="gift_desc">You correctly answered 10/10 questions! Click the gift box below to claim your prize:</p>
+        
+        <div onclick="openGiftBox()" class="cursor-pointer inline-block transform hover:scale-110 transition-transform duration-300 animate-bounce-gentle my-4">
+          <div class="text-8xl">🎁</div>
+          <p class="text-xs font-bold text-brandCyan mt-2" data-i18n="gift_open_btn">Open Gift</p>
+        </div>
+      </div>
+
+      <!-- PRIZE RESULT VIEW -->
+      <div id="prizeResultContainer" class="hidden text-center py-4">
+        <h3 id="congratulationsText" class="text-xl font-extrabold text-brandNavy mb-4">Congratulations, you've got a ...</h3>
+        
+        <div class="bg-gradient-to-br from-amber-50 to-emerald-50 p-6 rounded-2xl border border-amber-300 shadow-inner mb-6">
+          <div id="prizeIcon" class="text-7xl mb-3">🦧</div>
+          <h4 id="prizeName" class="text-2xl font-black text-brandNavy">Bornean Orangutan</h4>
+          <p id="prizeOrigin" class="text-xs font-semibold text-brandCyan mb-2">🇮🇩 Indonesia & 🇲🇾 Malaysia</p>
+          <p id="prizeDesc" class="text-xs text-slate-600 italic">One of the most intelligent primates in Southeast Asia inhabiting tropical rainforest canopies.</p>
+        </div>
+
+        <button onclick="resetGame()" class="w-full py-3 bg-brandNavy text-white rounded-xl font-bold hover:bg-brandCyan transition-colors">
+          <span data-i18n="play_again">Play Again</span> <i class="fa-solid fa-rotate-right ml-1"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <script>
+    let audioCtx = null;
+    let bgmInterval = null;
+    let currentLanguage = 'en';
+
+    // DATABASE KONTEN PEMBELAJARAN MIKRO YANG SANGAT LENGKAP & PANJANG (9 BAHASA)
+    const learningModulesData = {
+      en: {
+        1: { 
+          title: "Module 1: Rain Forest Endemic Species", 
+          desc: `<p class="font-semibold text-brandNavy text-base">1. Ecological Significance & Regional Context</p><p>Southeast Asia's tropical rainforests represent one of Earth's most critical biodiversity hotspots, harboring approximately 20% of all global plant, animal, and marine species within compressed geographic zones. Primary rainforests located across Borneo, Sumatra, and Indochina serve as irreplaceable global carbon sinks, regulating regional precipitation cycles, purifying atmospheric air, and protecting ancient watershed systems.</p><p class="font-semibold text-brandNavy text-base mt-4">2. Key Endemic Species Spotlight</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Bornean & Sumatran Orangutans:</strong> Recognized as umbrella species and critical seed dispersers. Their daily foraging movements across high forest canopies facilitate large-seed germination, directly driving rainforest regeneration and structural diversity.</li><li><strong>Rhinoceros Hornbills:</strong> Often hailed as the 'Farmers of the Forest'. By consuming nutrient-rich forest fruits and regurgitating or dropping intact seeds over extensive territorial ranges, hornbills maintain the botanical health and canopy continuity of primary jungle ecosystems.</li><li><strong>Rafflesia Arnoldii:</strong> The world's largest individual flower, endemic to Southeast Asian rainforests. This parasitic plant relies completely on specific Tetrastigma vines, highlighting the delicate ecological interdependence embedded within jungle habitats.</li></ul><p class="font-semibold text-brandNavy text-base mt-4">3. Conservation Threats & Action</p><p>Rapid agricultural conversion, commercial logging, and habitat fragmentation pose severe risks to endemic flora and fauna. Youth-led conservation initiatives focusing on wildlife corridors and sustainable forestry are vital to reversing these declines.</p>`
+        },
+        2: { 
+          title: "Module 2: Marine Life & Coral Triangle", 
+          desc: `<p class="font-semibold text-brandNavy text-base">1. The Global Epicenter of Marine Biodiversity</p><p>The Coral Triangle—spanning the waters of Indonesia, Malaysia, the Philippines, and neighboring ASEAN coastal nations—harbors roughly 76% of all known coral species on Earth. It serves as the primary nursery ground for thousands of pelagic fish species and supports the livelihoods of over 120 million coastal residents.</p><p class="font-semibold text-brandNavy text-base mt-4">2. Core Marine Habitats & Species</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Coral Reef Ecosystems:</strong> Complex calcium carbonate structures acting as underwater breakwaters protecting coastlines from storm surges, while supplying shelter and breeding grounds for marine organisms.</li><li><strong>Marine Turtles (Green & Hawksbill Turtles):</strong> Long-distance migratory reptiles that maintain seagrass bed health and sponge distribution equilibrium across regional maritime boundaries.</li><li><strong>Pelagic & Reef Fish:</strong> Over 3,000 species of reef fish contribute to complex trophic webs, sustaining nutrient recycling and overall ocean health.</li></ul><p class="font-semibold text-brandNavy text-base mt-4">3. Anthropogenic Pressures</p><p>Climate-induced ocean warming, coral bleaching, destructive fishing methods, and marine plastic pollution threaten regional reefs. Transboundary marine protected areas (MPAs) and youth-led coastal cleanups are essential countermeasures.</p>`
+        },
+        3: { 
+          title: "Module 3: Mangrove Ecosystems in ASEAN", 
+          desc: `<p class="font-semibold text-brandNavy text-base">1. Blue Carbon & Coastal Shielding</p><p>ASEAN member states account for roughly 35% of the entire global mangrove forest coverage. These intertidal forests function as extraordinary 'Blue Carbon' sinks, sequestering atmospheric carbon dioxide at rates up to five times higher per hectare than terrestrial tropical rainforests.</p><p class="font-semibold text-brandNavy text-base mt-4">2. Ecological & Community Benefits</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Natural Disaster Buffer:</strong> Dense root networks attenuate wave energy, protecting vulnerable coastal villages from tsunamis, tropical storms, and rising sea levels.</li><li><strong>ursery Grounds for Fisheries:</strong> Mangrove root systems provide protected breeding grounds for commercially vital shrimp, crabs, and juvenile finfish species.</li><li><strong>Water Filtration:</strong> Roots trap terrestrial sediment and absorb excess nutrients, preventing toxic algal blooms and preserving coastal water clarity.</li></ul><p class="font-semibold text-brandNavy text-base mt-4">3. Restoration Imperatives</p><p>Unregulated aquaculture expansion and coastal urban development have historically depleted mangrove tracts. Community-based replanting and legal zoning protections are critical for restoring these vital ecosystems.</p>`
+        },
+        4: { 
+          title: "Module 4: Endangered Wildlife Protection", 
+          desc: `<p class="font-semibold text-brandNavy text-base">1. Crisis Facing Megafauna</p><p>Southeast Asia's iconic megafauna—including the Sumatran Tiger, Javan and Sumatran Rhinoceroses, Asian Elephants, and Sunda Pangolins—face unprecedented extinction risks driven by illegal wildlife trafficking, habitat loss, and human-wildlife conflict.</p><p class="font-semibold text-brandNavy text-base mt-4">2. Protection Strategies & Technology</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Anti-Poaching Patrols:</strong> Community ranger networks and indigenous forest guardians conducting systematic sweeps to remove snares and illegal traps.</li><li><strong>Smart Camera Traps & Monitoring:</strong> Deploying solar-powered AI camera technology to track population numbers, migration routes, and illegal human encroachment in real-time.</li><li><strong>Habitat Connectivity:</strong> Establishing protected wildlife viaducts and green corridors to reconnect fragmented forest patches, allowing safe gene flow across animal populations.</li></ul><p class="font-semibold text-brandNavy text-base mt-4">3. Policy & Enforcement</p><p>Strengthening regional law enforcement, shutting down illegal wildlife black markets, and raising public awareness through school curricula are paramount steps toward securing a future for endangered species.</p>`
+        },
+        5: { 
+          title: "Module 5: Youth Climate & SDG Action", 
+          desc: `<p class="font-semibold text-brandNavy text-base">1. The Role of Youth in Environmental Governance</p><p>Achieving global sustainability goals requires active grassroots mobilization. Across the 10 ASEAN nations, young changemakers are taking the lead in implementing local climate solutions aligned directly with Sustainable Development Goal 14 (Life Below Water) and Sustainable Development Goal 15 (Life on Land).</p><p class="font-semibold text-brandNavy text-base mt-4">2. Key Action Frameworks for Youth</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Digital Advocacy & Education:</strong> Utilizing social media, open-source mapping tools, and web platforms to disseminate biodiversity literacy and scientific data to wider public audiences.</li><li><strong>Grassroots Restoration Projects:</strong> Organizing community tree-planting events, river cleanup campaigns, and urban biodiversity gardening initiatives.</li><li><strong>Policy Engagement:</strong> Participating in regional youth forums, drafting environmental declarations, and advocating for robust climate policies among national lawmakers.</li></ul><p class="font-semibold text-brandNavy text-base mt-4">3. Building a Sustainable Future</p><p>By combining traditional ecological knowledge with modern digital technology, ASEAN youth are forging a resilient path toward regional ecological harmony and climate resilience.</p>`
+        }
+      },
+      id: {
+        1: { 
+          title: "Modul 1: Spesies Endemik Hutan Hujan", 
+          desc: `<p class="font-semibold text-brandNavy text-base">1. Signifikansi Ekologis & Konteks Regional</p><p>Hutan hujan tropis di Asia Tenggara merupakan salah satu pusat keanekaragaman hayati paling krusial di bumi, menampung sekitar 20% dari seluruh spesies tumbuhan, hewan, dan laut di dunia dalam wilayah geografis yang padat. Hutan primer di Kalimantan, Sumatra, dan Indochina berfungsi sebagai penyerap karbon global yang tak tergantikan, pengatur siklus curah hujan regional, serta pelindung daerah aliran sungai purba.</p><p class="font-semibold text-brandNavy text-base mt-4">2. Sorotan Spesies Endemik Utama</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Orangutan Kalimantan & Sumatra:</strong> Dikenal sebagai spesies payung dan penyebar benih vital. Pergerakan harian mereka di kanopi hutan memfasilitasi perkecambahan biji besar, yang secara langsung mendorong regenerasi hutan hujan dan keragaman struktural.</li><li><strong>Burung Rangkong (Hornbill):</strong> Sering dijuluki sebagai 'Petani Hutan'. Dengan memakan buah-buahan hutan kaya nutrisi dan memuntahkan atau menjatuhkan biji utuh di wilayah teritorial yang luas, rangkong menjaga kesehatan botani dan kesinambungan kanopi hutan primer.</li><li><strong>Rafflesia Arnoldii:</strong> Bunga tunggal terbesar di dunia yang endemik di hutan hujan Asia Tenggara. Tumbuhan parasit ini bergantung sepenuhnya pada inang liana Tetrastigma, menunjukkan ketergantungan ekologis yang sangat halus di dalam habitat hutan.</li></ul><p class="font-semibold text-brandNavy text-base mt-4">3. Ancaman & Aksi Konservasi</p><p>Konversi lahan pertanian yang cepat, pembalakan liar, dan fragmentasi habitat menimbulkan risiko parah bagi flora dan fauna endemik. Inisiatif konservasi yang dipimpin oleh pemuda yang berfokus pada koridor satwa liar dan kehutanan berkelanjutan sangat vital untuk memulihkan populasi mereka.</p>`
+        },
+        2: { 
+          title: "Modul 2: Kehidupan Laut & Segitiga Terumbu Karang", 
+          desc: `<p class="font-semibold text-brandNavy text-base">1. Pusat Keanekaragaman Hayati Laut Global</p><p>Segitiga Terumbu Karang—yang meliputi perairan Indonesia, Malaysia, Filipina, dan negara pesisir ASEAN lainnya—menyimpan sekitar 76% dari seluruh spesies karang yang dikenal di bumi. Wilayah ini berfungsi sebagai tempat pemijahan utama bagi ribuan spesies ikan pelagis dan menopang penghidupan lebih dari 120 juta penduduk pesisir.</p><p class="font-semibold text-brandNavy text-base mt-4">2. Habitat & Spesies Laut Utama</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Ekosistem Terumbu Karang:</strong> Struktur kalsium karbonat kompleks yang bertindak sebagai pemecah gelombang alami, melindungi garis pantai dari badai besar sekaligus menyediakan tempat perlindungan dan pemijahan bagi organisme laut.</li><li><strong>Penyu Laut (Penyu Hijau & Sisik):</strong> Reptil migran jarak jauh yang menjaga kesehatan padang lamun dan keseimbangan distribusi spons di batas maritim regional.</li><li><strong>Ikan Karang & Pelagis:</strong> Lebih dari 3,000 spesies ikan karang berkontribusi pada jaring makanan yang kompleks, mempertahankan daur ulang nutrisi dan kesehatan laut secara menyeluruh.</li></ul><p class="font-semibold text-brandNavy text-base mt-4">3. Tekanan Antropogenik</p><p>Pemanasan laut akibat perubahan iklim, pemutihan karang, metode penangkapan ikan yang merusak, dan polusi plastik laut mengancam terumbu karang regional. Kawasan konservasi laut lintas batas dan aksi bersih pantai oleh pemuda adalah penanggulangan esensial.</p>`
+        },
+        3: { 
+          title: "Modul 3: Ekosistem Mangrove ASEAN", 
+          desc: `<p class="font-semibold text-brandNavy text-base">1. Karbon Biru & Perisai Pesisir</p><p>Negara anggota ASEAN menyumbang sekitar 35% dari seluruh cakupan hutan mangrove global. Hutan pasang surut ini berfungsi sebagai penyerap 'Karbon Biru' yang luar biasa, menyerap karbon dioksida atmosfer dengan laju hingga lima kali lipat lebih tinggi per hektar dibandingkan hutan hujan tropis daratan.</p><p class="font-semibold text-brandNavy text-base mt-4">2. Manfaat Ekologis & Komunitas</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Penyangga Bencana Alam:</strong> Jaringan akar yang padat meredam energi gelombang, melindungi desa pesisir yang rentan dari tsunami, badai tropis, dan kenaikan permukaan air laut.</li><li><strong>Area Pemijahan Perikanan:</strong> Sistem akar mangrove menyediakan tempat berkembang biak yang aman bagi udang, kepiting, dan ikan komersial bernilai tinggi.</li><li><strong>Filtrasi Air:</strong> Akar menyaring sedimen darat dan menyerap kelebihan nutrisi, mencegah ledakan alga beracun (algal bloom) dan menjaga kejernihan air pesisir.</li></ul><p class="font-semibold text-brandNavy text-base mt-4">3. Imperatif Restorasi</p><p>Ekspansi akuakultur yang tidak teratur dan pembangunan perkotaan pesisir secara historis telah mengurangi luas mangrove. Penanaman kembali berbasis komunitas dan perlindungan zonasi hukum sangat krusial untuk memulihkan ekosistem penting ini.</p>`
+        },
+        4: { 
+          title: "Modul 4: Perlindungan Satwa Terancam Punah", 
+          desc: `<p class="font-semibold text-brandNavy text-base">1. Krisis yang Dihadapi Megaflora & Megafauna</p><p>Megafauna ikonik Asia Tenggara—termasuk Harimau Sumatra, Badak Jawa dan Sumatra, Gajah Asia, serta Trenggiling Sunda—menghadapi risiko kepunahan yang belum pernah terjadi sebelumnya akibat perdagangan satwa liar ilegal, hilangnya habitat, dan konflik manusia dengan satwa.</p><p class="font-semibold text-brandNavy text-base mt-4">2. Strategi Perlindungan & Teknologi</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Patroli Anti-Perburuan Liar:</strong> Jaringan jagawana komunitas dan penjaga hutan adat yang melakukan penyisiran sistematis untuk menjerat jerat dan perangkap ilegal.</li><li><strong>Jebakan Kamera Pintar (Smart Camera Traps):</strong> Menerapkan teknologi kamera AI bertenaga surya untuk melacak jumlah populasi, jalur migrasi, dan perambahan manusia secara real-time.</li><li><strong>Konektivitas Habitat:</strong> Membangun jembatan penyeberangan satwa liar dan koridor hijau yang dilindungi untuk menghubungkan kembali area hutan yang terfragmentasi, memungkinkan aliran genetik yang aman di antara populasi hewan.</li></ul><p class="font-semibold text-brandNavy text-base mt-4">3. Kebijakan & Penegakan Hukum</p><p>Memperkuat penegakan hukum regional, menutup pasar gelap satwa liar ilegal, dan meningkatkan kesadaran publik melalui kurikulum sekolah adalah langkah terpenting untuk mengamankan masa depan spesies terancam punah.</p>`
+        },
+        5: { 
+          title: "Modul 5: Aksi Iklim Pemuda & SDG", 
+          desc: `<p class="font-semibold text-brandNavy text-base">1. Peran Pemuda dalam Tata Kelola Lingkungan</p><p>Mencapai tujuan keberlanjutan global memerlukan mobilisasi akar rumput yang aktif. Di 10 negara ASEAN, para agen perubahan muda memegang kendali dalam menerapkan solusi iklim lokal yang selaras langsung dengan Tujuan Pembangunan Berkelanjutan (SDG) 14 (Ekosistem Laut) dan SDG 15 (Ekosistem Darat).</p><p class="font-semibold text-brandNavy text-base mt-4">2. Kerangka Aksi Utama untuk Pemuda</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Advokasi & Edukasi Digital:</strong> Memanfaatkan media sosial, alat pemetaan sumber terbuka, dan platform web untuk menyebarkan literasi biodiversitas dan data ilmiah kepada khalayak luas.</li><li><strong>Proyek Restorasi Akar Rumput:</strong> Mengorganisir kegiatan penanaman pohon komunitas, kampanye bersih sungai, dan inisiatif berkebun biodiversitas perkotaan.</li><li><strong>Keterlibatan Kebijakan:</strong> Berpartisipasi dalam forum pemuda regional, merancang deklarasi lingkungan, dan mengadvokasi kebijakan iklim yang kuat di hadapan para pembuat undang-undang nasional.</li></ul><p class="font-semibold text-brandNavy text-base mt-4">3. Membangun Masa Depan Berkelanjutan</p><p>Dengan memadukan pengetahuan ekologi tradisional dan teknologi digital modern, pemuda ASEAN sedang menempa jalur tangguh menuju keharmonisan ekologis regional dan ketahanan iklim.</p>`
+        }
+      },
+      vi: {
+        1: { title: "Mô-đun 1: Loài Đặc Hữu Rừng Mưa", desc: `<p class="font-semibold text-brandNavy text-base">1. Ý nghĩa sinh thái & Bối cảnh khu vực</p><p>Rừng mưa nhiệt đới Đông Nam Á là một trong những điểm nóng đa dạng sinh học quan trọng nhất Trái Đất, chứa khoảng 20% các loài thực vật, động vật và sinh vật biển trên toàn cầu.</p><p class="font-semibold text-brandNavy text-base mt-4">2. Các loài đặc hữu chính</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Đười ươi Borneo & Sumatra:</strong> Đóng vai trò là loài dù che và phát tán hạt giống quan trọng giúp tái sinh rừng mưa.</li><li><strong>Chim mỏ sừng (Hornbill):</strong> Được mệnh danh là 'Người nông dân của rừng xanh' duy trì sức khỏe thực vật.</li><li><strong>Rafflesia Arnoldii:</strong> Loài hoa đơn lớn nhất thế giới đặc hữu tại Đông Nam Á.</li></ul>` },
+        2: { title: "Mô-đun 2: Sinh Vật Biển & Tam Giác San Hô", desc: `<p class="font-semibold text-brandNavy text-base">1. Tâm điểm đa dạng sinh học biển toàn cầu</p><p>Tam giác San hô chứa khoảng 76% tất cả các loài san hô được biết đến trên Trái Đất, là vườn ươm chính cho hàng nghìn loài cá.</p><p class="font-semibold text-brandNavy text-base mt-4">2. Môi trường sống chính</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Hệ sinh thái rạn san hô:</strong> Cấu trúc bảo vệ bờ biển khỏi bão lớn.</li><li><strong>Rùa biển:</strong> Loài bò sát di cư duy trì thảm cỏ biển.</li></ul>` },
+        3: { title: "Mô-đun 3: Hệ Sinh Thái Rừng Ngập Mặn", desc: `<p class="font-semibold text-brandNavy text-base">1. Carbon Xanh & Lá chắn ven biển</p><p>ASEAN chiếm khoảng 35% diện tích rừng ngập mặn toàn cầu, đóng vai trò hấp thụ Carbon Xanh cực lớn và bảo vệ bờ biển trước thiên tai.</p>` },
+        4: { title: "Mô-đun 4: Bảo Vệ Động Vật Nguy Cấp", desc: `<p class="font-semibold text-brandNavy text-base">1. Khủng hoảng đối với động vật hoang dã</p><p>Hổ Sumatra, Tê giác và Voi Châu Á đối mặt với nguy cơ tuyệt chủng do buôn bán động vật hoang dã trái phép và mất môi trường sống.</p>` },
+        5: { title: "Mô-đun 5: Hành Động Khí Hậu Thanh Niên", desc: `<p class="font-semibold text-brandNavy text-base">1. Vai trò của thanh niên</p><p>Thanh niên ASEAN tiên phong thực hiện các mục tiêu SDG 14 và SDG 15 thông qua giáo dục và công nghệ.</p>` }
+      },
+      ms: {
+        1: { title: "Modul 1: Spesies Endemik Hutan Hujan", desc: `<p class="font-semibold text-brandNavy text-base">1. Kepentingan Ekologi & Konteks Serantau</p><p>Hutan hujan tropika Asia Tenggara mewakili salah satu pusat biodiversiti terpenting di Bumi, menempatkan hampir 20% spesies global.</p><p class="font-semibold text-brandNavy text-base mt-4">2. Spesies Endemik Utama</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Orangutan Borneo & Sumatra:</strong> Agen penyebar benih penting untuk regenerasi kanopi hutan.</li><li><strong>Burung Enggang:</strong> Dikenali sebagai 'Petani Hutan' yang memastikan kesihatan botani.</li></ul>` },
+        2: { title: "Modul 2: Kehidupan Marin & Segitiga Karang", desc: `<p class="font-semibold text-brandNavy text-base">1. Pusat Biodiversiti Marin Global</p><p>Segitiga Terumbu Karang memelihara 76% spesies karang di Bumi serta menopang kehidupan jutaan penduduk pesisir.</p>` },
+        3: { title: "Modul 3: Ekosistem Hutan Bakau ASEAN", desc: `<p class="font-semibold text-brandNavy text-base">1. Karbon Biru & Perlindungan Pesisir</p><p>ASEAN menyumbang 35% perlindungan bakau global sebagai benteng pertahanan bencana alam.</p>` },
+        4: { title: "Modul 4: Perlindungan Hidupan Liar Terancam", desc: `<p class="font-semibold text-brandNavy text-base">1. Krisis Megafuna</p><p>Harimau Malaya dan Gajah Asia memerlukan rondaan pencegahan pemburuan haram yang ketat.</p>` },
+        5: { title: "Modul 5: Tindakan Iklim Belia & SDG", desc: `<p class="font-semibold text-brandNavy text-base">1. Peranan Belia</p><p>Memperkasakan belia ASEAN memimpin inisiatif SDG 14 dan SDG 15.</p>` }
+      },
+      tl: {
+        1: { title: "Modyul 1: Mga Endemic na Espesye sa Gubat", desc: `<p class="font-semibold text-brandNavy text-base">1. Kahalagahang Ekolohikal</p><p>Tahanan ang Timog-Silangang Asya ng 20% ng mga espesye sa mundo sa loob ng kanilang mga tropikal na gubat.</p>` },
+        2: { title: "Modyul 2: Buhay-Dagat at Coral Triangle", desc: `<p class="font-semibold text-brandNavy text-base">1. Sentro ng Biodiversidad sa Dagat</p><p>Taglay ng Coral Triangle ang 76% ng coral species sa buong mundo.</p>` },
+        3: { title: "Modyul 3: Ecosystem ng Bakawan sa ASEAN", desc: `<p class="font-semibold text-brandNavy text-base">1. Blue Carbon at Pananggalang</p><p>35% ng bakawan sa mundo ay matatagpuan sa rehiyon ng ASEAN.</p>` },
+        4: { title: "Modyul 4: Proteksyon sa Nanganib na Hayop", desc: `<p class="font-semibold text-brandNavy text-base">1. Krisis sa Megafauna</p><p>Kailangan ang maigting na pagbabantay laban sa illegal wildlife trade.</p>` },
+        5: { title: "Modyul 5: Aksyon ng Kabataan sa Klima", desc: `<p class="font-semibold text-brandNavy text-base">1. Papel ng Kabataan</p><p>Pangungunahan ng kabataan ang SDG 14 at SDG 15.</p>` }
+      },
+      th: {
+        1: { title: "โมดูล 1: สายพันธุ์ประจำถิ่นในป่าฝน", desc: `<p class="font-semibold text-brandNavy text-base">1. ความสำคัญทางนิเวศวิทยา</p><p>ป่าฝนเขตร้อนในเอเชียตะวันออกเฉียงใต้เป็นแหล่งความหลากหลายทางชีวภาพที่สำคัญที่สุดแห่งหนึ่งของโลก</p>` },
+        2: { title: "โมดูล 2: ชีวิตทางทะเลและสามเหลี่ยมปะการัง", desc: `<p class="font-semibold text-brandNavy text-base">1. ศูนย์กลางความหลากหลายทางชีวภาพทางทะเล</p><p>สามเหลี่ยมปะการังมีสายพันธุ์ปะการังถึง 76% ของโลก</p>` },
+        3: { title: "โมดูล 3: ระบบนิเวศป่าชายเลนในอาเซียน", desc: `<p class="font-semibold text-brandNavy text-base">1. คาร์บอนสีน้ำเงินและเกราะป้องกันชายฝั่ง</p><p>อาเซียนมีพื้นที่ป่าชายเลนคิดเป็น 35% ของโลก</p>` },
+        4: { title: "โมดูล 4: การปกป้องสัตว์ป่าที่ใกล้สูญพันธุ์", desc: `<p class="font-semibold text-brandNavy text-base">1. วิกฤตการณ์สัตว์ป่า</p><p>การลาดตระเวนและการใช้กล้องอัจฉริยะเพื่อปกป้องสัตว์ป่าใกล้สูญพันธุ์</p>` },
+        5: { title: "โมดูล 5: การทำงานด้านภูมิอากาศของเยาวชน", desc: `<p class="font-semibold text-brandNavy text-base">1. บทบาทของเยาวชน</p><p>เยาวชนอาเซียนนำการเปลี่ยนแปลงตามเป้าหมาย SDG 14 และ SDG 15</p>` }
+      },
+      my: {
+        1: { title: "မော်ဂျူး ၁ - မိုးသစ်တော ဒေသရင်း မျိုးစိတ်များ", desc: `<p class="font-semibold text-brandNavy text-base">1. ဂေဟစနစ် အရေးပါပုံ</p><p>အရှေ့တောင်အာရှ မိုးသစ်တောများသည် ကမ္ဘာ့ဇီဝမျိုးစုံမျိုးကွဲ ၂၀% ကို ပိုင်ဆိုင်ထားပြီး ကမ္ဘာ့ကာဘွန်စုပ်ယူမှုအတွက် အဓိကကျပါသည်။</p>` },
+        2: { title: "မော်ဂျူး ၂ - ပင်လယ်ရေကြောင်း သဘာဝ", desc: `<p class="font-semibold text-brandNavy text-base">1. ပင်လယ်ရေကြောင်း ဇီဝမျိုးစုံမျိုးကွဲ ဗဟိုချက်</p><p>သန္တာကျောက်တန်း သုံးဂေါင့်ဒေသသည် ကမ္ဘာ့သန္တာ ၇၆% ကို ပိုင်ဆိုင်ထားသည်။</p>` },
+        3: { title: "မော်ဂျူး ၃ - လမုတော ဂေဟစနစ်", desc: `<p class="font-semibold text-brandNavy text-base">1. အပြာရောင် ကာဘွန်နှင့် ကမ်းခြေကာကွယ်ရေး</p><p>အာဆီယံသည် ကမ္ဘာ့လမုတော ၃၅% ကို ပိုင်ဆိုင်ထားသည်။</p>` },
+        4: { title: "မော်ဂျူး ၄ - ရှားပါး တိရစ္ဆာန် ကာကွယ်ရေး", desc: `<p class="font-semibold text-brandNavy text-base">1. တိရစ္ဆာန်များ ရင်ဆိုင်နေရသော အကျပ်အတည်း</p><p>တရားမဝင် အမဲလိုက်ခြင်းမှ ကာကွယ်ရန် စမတ်ကင်မရာများနှင့် ကင်းလှည့်မှုများ လိုအပ်သည်။</p>` },
+        5: { title: "မော်ဂျူး ၅ - လူငယ် ရာသီဥတု လှုပ်ရှားမှု", desc: `<p class="font-semibold text-brandNavy text-base">1. လူငယ်များ၏ အခန်းကဏ္ဍ</p><p>SDG 14 နှင့် 15 ကို ဦးဆောင်အကောင်အထည်ဖော်ရန် လူငယ်များ ပါဝင်ဆောင်ရွက်ခြင်း။</p>` }
+      },
+      km: {
+        1: { title: "ម៉ូឌុលទី ១៖ ប្រភេទសត្វព្រៃក្នុងព្រៃទឹកភ្លៀង", desc: `<p class="font-semibold text-brandNavy text-base">១. សារៈសំខាន់អេកូឡូស៊ី</p><p>ព្រៃទឹកភ្លៀងអាស៊ីអាគ្នេយ៍គឺជាកន្លែងជីវចម្រុះដ៏សំខាន់បំផុតមួយនៅលើផែនដីដែលមាន ២០% នៃប្រភេទសត្វនិងរុក្ខជាតិពិភពលោក។</p>` },
+        2: { title: "ម៉ូឌុលទី ២៖ ជីវិតសមុទ្រ និងត្រីកោណផ្កាថ្ម", desc: `<p class="font-semibold text-brandNavy text-base">១. មជ្ឈមណ្ឌលជីវចម្រុះសមុទ្រ</p><p>ត្រីកោណផ្កាថ្មមាន ៧៦% នៃប្រភេទផ្កាថ្មសរុបនៅលើផែនដី។</p>` },
+        3: { title: "ម៉ូឌុលទី ៣៖ ប្រព័ន្ធអេកូឡូស៊ីព្រៃកោងកាង", desc: `<p class="font-semibold text-brandNavy text-base">១. កាបូនខៀវ និងការការពារឆ្នេរ</p><p>អាស៊ានមានផ្ទៃដីព្រៃកោងកាងប្រហែល ៣៥% នៃពិភពលោក។</p>` },
+        4: { title: "ម៉ូឌុលទី ៤៖ ការការពារសត្វព្រៃរងគ្រោះថ្នាក់", desc: `<p class="font-semibold text-brandNavy text-base">១. វិបត្តិសត្វព្រៃ</p><p>ការការពារសត្វជិតផុតពូជតាមរយៈការល្បลาดตระเวน និងកាមេរ៉ាឆ្លាតវៃ។</p>` },
+        5: { title: "ម៉ូឌុលទី ៥៖ សកម្មភាពយុវជន និង SDG", desc: `<p class="font-semibold text-brandNavy text-base">១. តួនាទីយុវជន</p><p>ផ្តល់អំណាចដល់យុវជនដឹកនាំសកម្មភាព SDG 14 និង SDG 15។</p>` }
+      },
+      lo: {
+        1: { title: "ໂມດູນ 1: ສາຍພັນພື້ນເມືອງໃນປ່າດົງດິບ", desc: `<p class="font-semibold text-brandNavy text-base">1. ຄວາມສໍາຄັນทางນິເວດວິທະຍາ</p><p>ປ່າດົງດິບໃນອາຊີອາຄະເນເປັນແຫຼ່ງຊີວະນາໆພັນທີ່ສຳຄັນທີ່ສຸດແຫ່ງໜຶ່ງຂອງໂລກ ກວມເອົາ 20% ຂອງຊະນິດພັນທົ່ວໂລກ.</p>` },
+        2: { title: "ໂມດູນ 2: ຊີວິດທາງທະເລ ແລະ ສາມຫຼ່ຽມປະກາລັງ", desc: `<p class="font-semibold text-brandNavy text-base">1. ສູນກາງຄວາມຫຼາກຫຼາຍທາງຊີວະພາບທາງທະເລ</p><p>ສາມຫຼ່ຽມປະກາລັງມີປະກາລັງ 76% ທົ່ວໂລກ.</p>` },
+        3: { title: "ໂມດູນ 3: ລະບົບນິເວດປ່າຊາຍເລນອາຊຽນ", desc: `<p class="font-semibold text-brandNavy text-base">1. ຄາບອນສີຟ້າ ແລະ ເກາະປ້ອງກັນຊາຍຝັ່ງ</p><p>ອາຊຽນກວມເອົາ 35% ຂອງປ່າຊາຍເລນທົ່ວໂລກ.</p>` },
+        4: { title: "ໂມດູນ 4: ການປົກປ້ອງສັດປ່າທີ່ໃກ້ສູນພັນ", desc: `<p class="font-semibold text-brandNavy text-base">1. ວິກິດການສັດປ່າ</p><p>ການປົກປ້ອງສັດປ່າທີ່ໃກ້ສູນພັນດ້ວຍການກວດກາ ແລະ ເຕັກໂນໂລຊີກ້ອງຖ່າຍຮູບອັດສະລິຍະ.</p>` },
+        5: { title: "ໂມດູນ 5: ການເຄື່ອນໄຫວດ້ານພູມອາກາດຂອງເຍົາວະຊົນ", desc: `<p class="font-semibold text-brandNavy text-base">1. ບົດບາດຂອງເຍົາວະຊົນ</p><p>ສົ່ງເສີມເຍົາວະຊົນນຳພາການປະຕິບັດ SDG 14 ແລະ SDG 15.</p>` }
+      }
+    };
+
+    // KAMUS TERJEMAHAN PENUH 9 BAHASA ASEAN UNTUK SELURUH HALAMAN UTAMA
+    const translations = {
+      en: {
+        nav_vision: "Our Vision", nav_features: "Features", nav_explore: "Explore Map", nav_partner: "Potential Partner",
+        hero_badge: "Empowering Youth Across ASEAN", hero_title: "Youth for ASEAN Biodiversity Literacy",
+        hero_subtitle: "Interactive micro-learning, gamified education, and ASEAN biodiversity mapping designed to protect our natural ecosystems.",
+        btn_launch: "Launch Platform", btn_browse: "Browse Modules", btn_play: "Play Eco Game", header_customizer: "Change Header Image:",
+        btn_bg_default: "Default (Navy)", btn_bg_forest: "Forest", btn_bg_marine: "Marine (Scuba Diver)", btn_bg_coastal: "Coastal (Beach)", btn_bg_upload: "Upload Custom",
+        features_title: "Key Pillars & Indicators", features_subtitle: "Core values driving our environmental movement forward",
+        pillar_1_title: "ASEAN Biodiversity Focus", pillar_1_desc: "Tailored specifically to Southeast Asia’s rich endemic species and fragile tropical biomes.",
+        pillar_2_title: "Interactive Biodiversity Map", pillar_2_desc: "Explore regional wildlife hotspots, protected reserves, and ecosystem metrics in real-time.",
+        pillar_3_title: "Micro-Learning Content", pillar_3_desc: "Bite-sized, digestible lessons tailored for youth and classroom participation.", click_open_modules: "Click to open 5 Modules →",
+        pillar_4_title: "Education & Interactive Games", pillar_4_desc: "Gamified learning paths that turn complex ecological concepts into engaging quests.",
+        pillar_5_title: "Focus on Biodiversity Literacy", pillar_5_desc: "Empowering the next generation with environmental knowledge and conservation mindsets.",
+        our_vision_tag: "OUR VISION", vision_quote: '"To empower young people across ASEAN with accessible biodiversity education that builds environmental literacy, encourages active participation, and inspires them to care for and protect the natural world."',
+        p_innovate: "INNOVATE", p_involve: "INVOLVE", p_impact: "IMPACT",
+        innovate_1: "Create inclusive digital platform.", innovate_2: "Build interactive website.", innovate_3: "Make biodiversity education accessible.",
+        involve_1: "Engage Youth actively across ASEAN.", involve_2: "Create Immersive learning experiences.", involve_3: "Extend Education beyond the classroom.",
+        impact_1: "Inspire active youth participation.", impact_2: "Turn knowledge into meaningful action.", impact_3: "Foster conservation action.",
+        partner_sub: "Collaborate With Us", partner_title: "Become a Potential Partner", partner_desc: "We invite environmental NGOs, educational institutions, youth movements, and corporate sustainability partners to join forces in expanding ASEAN biodiversity literacy.",
+        partner_check_1: "Co-create micro-learning modules & curriculum", partner_check_2: "Sponsor youth eco-campaigns & interactive games",
+        form_title: "Partner Application", form_org: "Organization Name", form_email: "Email Address", form_type: "Partnership Type", form_btn: "Submit Partner Request",
+        footer_tag: "Empowering ASEAN Youth for Biodiversity & Climate Action",
+        launch_modal_title: "Platform Ready!", launch_modal_desc: "Welcome to the Aequitas Biodiversity Dashboard. All 10 ASEAN regional data streams are live.", launch_modal_btn: "Enter Dashboard",
+        browse_modal_title: "Micro-Learning Modules", browse_modal_sub: "Select one of the 5 modules below to explore ASEAN biodiversity interactively:",
+        mod_1_title: "Module 1: Rain Forest Endemic Species", mod_1_sub: "Hornbills, Orangutans, and Canopy Ecosystems", mod_1_time: "5 mins",
+        mod_2_title: "Module 2: Marine Life & Coral Triangle", mod_2_sub: "Sea Turtles, Coral Reefs, and Coastal Conservation", mod_2_time: "7 mins",
+        mod_3_title: "Module 3: Mangrove Ecosystems in ASEAN", mod_3_sub: "Blue Carbon, Mangrove Crabs, and Coastal Protection", mod_3_time: "6 mins",
+        mod_4_title: "Module 4: Endangered Wildlife Protection", mod_4_sub: "Sumatran Tigers, Asian Elephants, and Anti-Poaching", mod_4_time: "8 mins",
+        mod_5_title: "Module 5: Youth Climate & SDG Action", mod_5_sub: "SDG 14, SDG 15, and Community Green Movements", mod_5_time: "5 mins",
+        btn_back_list: "← Back to List", btn_complete: "Complete Learning ✨",
+        game_title: "Eco-Sorting Challenge", game_subtitle: "Classify the habitat of this species correctly!", btn_marine_life: "Marine Life", btn_forest_biome: "Forest Biome", perfect_score_title: "🎉 Perfect Score! 🎉", gift_desc: "You correctly answered 10/10 questions! Click the gift box below to claim your prize:", gift_open_btn: "Open Gift", play_again: "Play Again"
+      },
+      id: {
+        nav_vision: "Visi Kami", nav_features: "Fitur", nav_explore: "Peta Interaktif", nav_partner: "Potensial Mitra",
+        hero_badge: "Memberdayakan Pemuda Lintas ASEAN", hero_title: "Literasi Keanekaragaman Hayati ASEAN",
+        hero_subtitle: "Pembelajaran mikro interaktif, edukasi gamifikasi, dan pemetaan biodiversitas ASEAN untuk melindungi ekosistem alam kita.",
+        btn_launch: "Luncurkan Platform", btn_browse: "Jelajahi Modul", btn_play: "Mainkan Game Eco", header_customizer: "Ganti Gambar Header:",
+        btn_bg_default: "Default (Biru)", btn_bg_forest: "Hutan", btn_bg_marine: "Laut (Penyelam)", btn_bg_coastal: "Pesisir (Pantai)", btn_bg_upload: "Unggah Kustom",
+        features_title: "Pilar Utama & Indikator", features_subtitle: "Nilai-nilai inti yang mendorong gerakan lingkungan kami",
+        pillar_1_title: "Fokus Biodiversitas ASEAN", pillar_1_desc: "Disesuaikan khusus untuk spesies endemik dan bioma tropis Asia Tenggara.",
+        pillar_2_title: "Peta Keanekaragaman Hayati Interaktif", pillar_2_desc: "Jelajahi kawasan suaka margasatwa dan metrik ekosistem secara real-time.",
+        pillar_3_title: "Konten Pembelajaran Mikro", pillar_3_desc: "Pelajaran ringkas dan praktis yang dirancang untuk partisipasi kelas dan pemuda.", click_open_modules: "Klik untuk membuka 5 Modul →",
+        pillar_4_title: "Edukasi & Game Interaktif", pillar_4_desc: "Jalur pembelajaran berbasis game yang mengubah konsep ekologi menjadi pencarian seru.",
+        pillar_5_title: "Fokus pada Literasi Biodiversitas", pillar_5_desc: "Memberdayakan generasi penerus dengan pengetahuan lingkungan dan pola pikir konservasi.",
+        our_vision_tag: "VISI KAMI", vision_quote: '"Memberdayakan generasi muda di seluruh ASEAN dengan pendidikan keanekaragaman hayati yang mudah diakses untuk membangun literasi lingkungan, mendorong partisipasi aktif, serta menginspirasi kepedulian terhadap alam."',
+        p_innovate: "INOVASI", p_involve: "LIBATKAN", p_impact: "DAMPAK",
+        innovate_1: "Membuat platform digital yang inklusif.", innovate_2: "Membangun situs web interaktif.", innovate_3: "Membuat pendidikan biodiversitas mudah diakses.",
+        involve_1: "Melibatkan pemuda secara aktif di seluruh ASEAN.", involve_2: "Menciptakan pengalaman belajar yang mendalam.", involve_3: "Memperluas pendidikan ke luar ruang kelas.",
+        impact_1: "Menginspirasi partisipasi aktif generasi muda.", impact_2: "Mengubah pengetahuan menjadi aksi nyata.", impact_3: "Mendorong tindakan konservasi berkelanjutan.",
+        partner_sub: "Kolaborasi Bersama Kami", partner_title: "Menjadi Mitra Potensial", partner_desc: "Kami mengundang LSM lingkungan, lembaga pendidikan, gerakan pemuda, dan mitra keberlanjutan perusahaan untuk bergabung memperluas literasi biodiversitas ASEAN.",
+        partner_check_1: "Bersama membuat modul & kurikulum pembelajaran mikro", partner_check_2: "Mendukung kampanye lingkungan pemuda & game interaktif",
+        form_title: "Aplikasi Kemitraan", form_org: "Nama Organisasi", form_email: "Alamat Email", form_type: "Jenis Kemitraan", form_btn: "Kirim Permintaan Mitra",
+        footer_tag: "Memberdayakan Pemuda ASEAN untuk Keanekaragaman Hayati & Aksi Iklim",
+        launch_modal_title: "Platform Siap!", launch_modal_desc: "Selamat datang di Dashboard Biodiversitas Aequitas. Seluruh 10 aliran data regional ASEAN telah aktif.", launch_modal_btn: "Masuk ke Dashboard",
+        browse_modal_title: "Modul Pembelajaran Mikro", browse_modal_sub: "Pilih salah satu dari 5 modul di bawah ini untuk mempelajari biodiversitas ASEAN secara interaktif:",
+        mod_1_title: "Modul 1: Spesies Endemik Hutan Hujan", mod_1_sub: "Burung Enggang, Orangutan, dan Ekosistem Kanopi", mod_1_time: "5 menit",
+        mod_2_title: "Modul 2: Kehidupan Laut & Segitiga Terumbu Karang", mod_2_sub: "Penyu Laut, Terumbu Karang, dan Konservasi Pesisir", mod_2_time: "7 menit",
+        mod_3_title: "Modul 3: Ekosistem Mangrove ASEAN", mod_3_sub: "Karbon Biru, Kepiting Bakau, dan Perlindungan Pesisir", mod_3_time: "6 menit",
+        mod_4_title: "Modul 4: Perlindungan Satwa Terancam Punah", mod_4_sub: "Harimau Sumatra, Gajah Kerdil, dan Anti-Perburuan", mod_4_time: "8 menit",
+        mod_5_title: "Modul 5: Aksi Iklim Pemuda & SDG", mod_5_sub: "SDG 14, SDG 15, dan Gerakan Hijau Komunitas", mod_5_time: "5 menit",
+        btn_back_list: "← Kembali ke Daftar", btn_complete: "Selesai Belajar ✨",
+        game_title: "Tantangan Klasifikasi Ekologi", game_subtitle: "Klasifikasikan habitat hewan ini dengan benar!", btn_marine_life: "Kehidupan Laut", btn_forest_biome: "Bioma Hutan", perfect_score_title: "🎉 Nilai Sempurna! 🎉", gift_desc: "Kamu berhasil menjawab 10/10 pertanyaan dengan benar! Klik kado di bawah untuk membuka hadiahmu:", gift_open_btn: "Buka Kado", play_again: "Main Lagi"
+      },
+      vi: {
+        nav_vision: "Tầm Nhìn", nav_features: "Tính Năng", nav_explore: "Bản Đồ", nav_partner: "Đối Tác",
+        hero_badge: "Trao Quyền Cho Thanh Niên ASEAN", hero_title: "Kiến Thức Đa Dạng Sinh Học ASEAN",
+        hero_subtitle: "Học tập tương tác và bản đồ đa dạng sinh học ASEAN bảo vệ hệ sinh thái.",
+        btn_launch: "Khởi Chạy Platform", btn_browse: "Khám Phá Mô-đun", btn_play: "Chơi Game Eco", header_customizer: "Đổi Ảnh Đầu Trang:",
+        btn_bg_default: "Mặc Định", btn_bg_forest: "Rừng", btn_bg_marine: "Biển", btn_bg_coastal: "Bờ Biển", btn_bg_upload: "Tải Ảnh Lên",
+        features_title: "Trụ Cột Chính", features_subtitle: "Giá trị cốt lõi thúc đẩy hành động môi trường",
+        pillar_1_title: "Đa Dạng Sinh Học ASEAN", pillar_1_desc: "Thiết kế riêng cho các loài đặc hữu và sinh cảnh nhiệt đới Đông Nam Á.",
+        pillar_2_title: "Bản Đồ Tương Tác", pillar_2_desc: "Khám phá các khu bảo tồn thiên nhiên theo thời gian thực.",
+        pillar_3_title: "Bài Học Ngắn", pillar_3_desc: "Bài học hấp dẫn phù hợp cho học sinh và thanh niên.", click_open_modules: "Mở 5 Mô-đun →",
+        pillar_4_title: "Game Giáo Dục", pillar_4_desc: "Trò chơi tương tác giúp đơn giản hóa các khái niệm sinh thái.",
+        pillar_5_title: "Nhận Thức Sinh Thái", pillar_5_desc: "Trang bị cho thế hệ trẻ tư duy bảo tồn môi trường.",
+        our_vision_tag: "TẦM NHÌN", vision_quote: '"Trao quyền cho thanh niên ASEAN tiếp cận giáo dục đa dạng sinh học để xây dựng nhận thức và bảo vệ tự nhiên."',
+        p_innovate: "ĐỔI MỚI", p_involve: "THAM GIA", p_impact: "TÁC ĐỘNG",
+        innovate_1: "Nền tảng kỹ thuật số.", innovate_2: "Website tương tác.", innovate_3: "Dễ dàng tiếp cận.",
+        involve_1: "Thanh niên ASEAN.", involve_2: "Trải nghiệm học tập.", involve_3: "Giáo dục mở rộng.",
+        impact_1: "Cảm hứng hành động.", impact_2: "Hành động thực tế.", impact_3: "Bảo tồn bền vững.",
+        partner_sub: "Hợp Tác", partner_title: "Trở Thành Đối Tác", partner_desc: "Mời các tổ chức phi chính phủ và trường học cùng mở rộng nhận thức môi trường.",
+        partner_check_1: "Đồng sáng tạo nội dung học tập", partner_check_2: "Tài trợ chiến dịch môi trường",
+        form_title: "Đăng Ký Đối Tác", form_org: "Tên Tổ Chức", form_email: "Email", form_type: "Loại Hình", form_btn: "Gửi Đăng Ký",
+        footer_tag: "Trao Quyền Cho Thanh Niên ASEAN Vì Khí Hậu",
+        launch_modal_title: "Sẵn Sàng!", launch_modal_desc: "Chào mừng đến với Dashboard Aequitas.", launch_modal_btn: "Vào Dashboard",
+        browse_modal_title: "Danh Sách Mô-đun", browse_modal_sub: "Chọn mô-đun để bắt đầu học:",
+        mod_1_title: "Mô-đun 1: Loài Đặc Hữu Rừng Mưa", mod_1_sub: "Vượn, Chim Hồng Hoàng và Thảm Thực Vật", mod_1_time: "5 phút",
+        mod_2_title: "Mô-đun 2: Sinh Vật Biển & Tam Giác San Hô", mod_2_sub: "Rùa Biển và Rạn San Hô", mod_2_time: "7 phút",
+        mod_3_title: "Mô-đun 3: Hệ Sinh Thái Rừng Ngập Mặn", mod_3_sub: "Carbon Xanh và Bờ Biển", mod_3_time: "6 phút",
+        mod_4_title: "Mô-đun 4: Bảo Vệ Động Vật Nguy Cấp", mod_4_sub: "Hổ Sumatra và Voi Châu Á", mod_4_time: "8 phút",
+        mod_5_title: "Mô-đun 5: Hành Động Khí Hậu Thanh Niên", mod_5_sub: "SDG 14 và SDG 15", mod_5_time: "5 phút",
+        btn_back_list: "← Quay lại", btn_complete: "Hoàn Thành ✨",
+        game_title: "Thử Thách Sinh Thái", game_subtitle: "Phân loại môi trường sống chính xác!", btn_marine_life: "Biển", btn_forest_biome: "Rừng", perfect_score_title: "🎉 Xuất Sắc! 🎉", gift_desc: "Bạn trả lời đúng 10/10! Nhấp vào hộp quà bên dưới:", gift_open_btn: "Mở Quà", play_again: "Chơi Lại"
+      },
+      ms: {
+        nav_vision: "Visi Kami", nav_features: "Ciri-ciri", nav_explore: "Peta Interaktif", nav_partner: "Rakan Potensi",
+        hero_badge: "Memperkasakan Belia ASEAN", hero_title: "Literasi Biodiversiti ASEAN",
+        hero_subtitle: "Pembelajaran mikro interaktif dan pemetaan biodiversiti ASEAN untuk melindungi ekosistem.",
+        btn_launch: "Pelancaran Platform", btn_browse: "Semak Modul", btn_play: "Main Game Eco", header_customizer: "Tukar Gambar Header:",
+        btn_bg_default: "Asal (Biru)", btn_bg_forest: "Hutan", btn_bg_marine: "Laut (Penyelam)", btn_bg_coastal: "Pesisir (Pantai)", btn_bg_upload: "Muat Naik Gambar",
+        features_title: "Pilar Utama & Indikator", features_subtitle: "Nilai teras yang memacu pergerakan alam sekitar kami",
+        pillar_1_title: "Fokus Biodiversiti ASEAN", pillar_1_desc: "Disesuaikan khas untuk spesies endemik dan bioma tropika Asia Tenggara.",
+        pillar_2_title: "Peta Biodiversiti Interaktif", pillar_2_desc: "Teroka kawasan suaka margasatwa secara masa nyata.",
+        pillar_3_title: "Kandungan Pembelajaran Mikro", pillar_3_desc: "Pelajaran ringkas yang dirancang untuk belia dan bilik darjah.", click_open_modules: "Buka 5 Modul →",
+        pillar_4_title: "Pendidikan & Permainan Interaktif", pillar_4_desc: "Laluan pembelajaran berasaskan permainan yang menyeronokkan.",
+        pillar_5_title: "Fokus Literasi Biodiversiti", pillar_5_desc: "Memperkasakan generasi muda dengan pengetahuan pemuliharaan.",
+        our_vision_tag: "VISI KAMI", vision_quote: '"Memperkasakan belia di seluruh ASEAN dengan pendidikan biodiversiti untuk memelihara alam semulajadi."',
+        p_innovate: "INOVASI", p_involve: "LIBATKAN", p_impact: "IMPAK",
+        innovate_1: "Platform digital inklusif.", innovate_2: "Laman web interaktif.", innovate_3: "Pendidikan mudah diakses.",
+        involve_1: "Penglibatan belia ASEAN.", involve_2: "Pengalaman mendalam.", involve_3: "Pendidikan luar bilik darjah.",
+        impact_1: "Inspirasi belia.", impact_2: "Tindakan bermakna.", impact_3: "Pemuliharaan alam.",
+        partner_sub: "Bekerjasama", partner_title: "Rakan Rangkaian", partner_desc: "Mengjemput NGO dan institusi pendidikan untuk memulihara biodiversiti.",
+        partner_check_1: "Bina modul pembelajaran bersama", partner_check_2: "Taja kempen alam sekitar belia",
+        form_title: "Borang Kemitraan", form_org: "Nama Organisasi", form_email: "Alamat E-mel", form_type: "Jenis Rakan", form_btn: "Hantar Permohonan",
+        footer_tag: "Memperkasakan Belia ASEAN untuk Aksi Iklim",
+        launch_modal_title: "Platform Bersedia!", launch_modal_desc: "Selamat datang ke Dashboard Aequitas.", launch_modal_btn: "Masuk Dashboard",
+        browse_modal_title: "Modul Pembelajaran Mikro", browse_modal_sub: "Pilih modul untuk meneroka biodiversiti:",
+        mod_1_title: "Modul 1: Spesies Endemik Hutan Hujan", mod_1_sub: "Burung Enggang dan Orangutan", mod_1_time: "5 minit",
+        mod_2_title: "Modul 2: Kehidupan Marin & Segitiga Karang", mod_2_sub: "Penyu Laut dan Terumbu Karang", mod_2_time: "7 minit",
+        mod_3_title: "Modul 3: Ekosistem Bakau ASEAN", mod_3_sub: "Karbon Biru dan Pesisir Pantai", mod_3_time: "6 minit",
+        mod_4_title: "Modul 4: Perlindungan Hidupan Liar Terancam", mod_4_sub: "Harimau Malaya dan Gajah Kerdil", mod_4_time: "8 minit",
+        mod_5_title: "Modul 5: Tindakan Iklim Belia & SDG", mod_5_sub: "SDG 14 dan SDG 15", mod_5_time: "5 minit",
+        btn_back_list: "← Kembali", btn_complete: "Selesai Belajar ✨",
+        game_title: "Cabaran Ekologi", game_subtitle: "Kelaskan habitat spesies ini dengan betul!", btn_marine_life: "Kehidupan Laut", btn_forest_biome: "Bioma Hutan", perfect_score_title: "🎉 Markah Penuh! 🎉", gift_desc: "Anda menjawab 10/10 dengan betul! Klik kotak hadiah di bawah:", gift_open_btn: "Buka Hadiah", play_again: "Main Lagi"
+      },
+      tl: {
+        nav_vision: "Pananaw", nav_features: "Tampok", nav_explore: "Galugarin", nav_partner: "Kasosyo",
+        hero_badge: "Pagpapalakas sa Kabataan", hero_title: "Biodiversidad ng ASEAN",
+        hero_subtitle: "Interaktibong pag-aaral at mapa ng biodiversidad sa ASEAN.",
+        btn_launch: "Buksan ang Platform", btn_browse: "Tingnan ang Modyul", btn_play: "Laruin ang Game", header_customizer: "Baguhin ang Larawan:",
+        btn_bg_default: "Default", btn_bg_forest: "Gubat", btn_bg_marine: "Dagat", btn_bg_coastal: "Baybayin", btn_bg_upload: "Mag-upload",
+        features_title: "Mga Pangunahing Haligi", features_subtitle: "Mga halaga para sa kalikasan",
+        pillar_1_title: "Biodiversidad ng ASEAN", pillar_1_desc: "Para sa mga natatanging espesye sa Timog-Silangang Asya.",
+        pillar_2_title: "Interaktibong Mapa", pillar_2_desc: "Tingnan ang mga reserba sa real-time.",
+        pillar_3_title: "Mabilis na Aralin", pillar_3_desc: "Aralin na madaling intindihin ng kabataan.", click_open_modules: "Buksan ang 5 Modyul →",
+        pillar_4_title: "Interaktibong Laro", pillar_4_desc: "Mga larong nagtuturo ng ekolohiya.",
+        pillar_5_title: "Kaalaman sa Kalikasan", pillar_5_desc: "Paghahanda sa susunod na henerasyon.",
+        our_vision_tag: "AMING PANANAW", vision_quote: '"Bigyang-lakas ang kabataan sa ASEAN sa pamamagitan ng edukasyon sa kalikasan."',
+        p_innovate: "MAG-INOBA", p_involve: "MAKILAHOK", p_impact: "MAG-IMPAKTOHAN",
+        innovate_1: "Digital na platform.", innovate_2: "Interaktibong website.", innovate_3: "Madaling aralin.",
+        involve_1: "Kabataan ng ASEAN.", involve_2: "Makabuluhang karanasan.", involve_3: "Edukasyon kahit saan.",
+        impact_1: "Pakikilahok ng kabataan.", impact_2: "Aksyon mula sa kaalaman.", impact_3: "Proteksyon sa kalikasan.",
+        partner_sub: "Makipagtulungan", partner_title: "Maging Kasosyo", partner_desc: "Inaanyayahan ang mga NGO at paaralan na maging kasosyo.",
+        partner_check_1: "Lumikha ng mga modyul sa pag-aaral", partner_check_2: "Sumuporta sa mga kampanya sa kalikasan",
+        form_title: "Pormularyo sa Pagkasosyo", form_org: "Pangalan ng Organisasyon", form_email: "Email Address", form_type: "Uri ng Pagkasosyo", form_btn: "Isumite",
+        footer_tag: "Pagpapalakas sa Kabataan ng ASEAN",
+        launch_modal_title: "Handa na ang Platform!", launch_modal_desc: "Maligayang pagdating sa Dashboard ng Aequitas.", launch_modal_btn: "Pumasok sa Dashboard",
+        browse_modal_title: "Mga Modyul sa Pag-aaral", browse_modal_sub: "Pumili ng modyul upang magsimula:",
+        mod_1_title: "Modyul 1: Mga Espesye sa Gubat", mod_1_sub: "Mga ibon at Orangutan", mod_1_time: "5 minuto",
+        mod_2_title: "Modyul 2: Buhay-Dagat at Coral Triangle", mod_2_sub: "Pagong at Terang Karang", mod_2_time: "7 minuto",
+        mod_3_title: "Modyul 3: Bakawan sa ASEAN", mod_3_sub: "Blue Carbon at Baybayin", mod_3_time: "6 minuto",
+        mod_4_title: "Modyul 4: Proteksyon sa Nanganib na Hayop", mod_4_sub: "Tigre at Elepante", mod_4_time: "8 minuto",
+        mod_5_title: "Modyul 5: Aksyon sa Klima ng Kabataan", mod_5_sub: "SDG 14 at SDG 15", mod_5_time: "5 minuto",
+        btn_back_list: "← Bumalik", btn_complete: "Tapusin ang Aralin ✨",
+        game_title: "Subok sa Ekolohiya", game_subtitle: "Iuri ang tirahan ng hayop na ito!", btn_marine_life: "Buhay Dagat", btn_forest_biome: "Gubat", perfect_score_title: "🎉 Perpektong Iskor! 🎉", gift_desc: "Nakuha mo ang 10/10 na tamang sagot! I-click ang regalo:", gift_open_btn: "Buksan ang Regalo", play_again: "Laruin Ulit"
+      },
+      th: {
+        nav_vision: "วิสัยทัศน์", nav_features: "คุณสมบัติ", nav_explore: "สำรวจแผนที่", nav_partner: "พันธมิตร",
+        hero_badge: "เสริมพลังเยาวชนอาเซียน", hero_title: "ความรู้ความเข้าใจเกี่ยวกับความหลากหลายทางชีวภาพอาเซียน",
+        hero_subtitle: "การเรียนรู้สั้นๆ แบบโต้ตอบและการทำแผนที่ความหลากหลายทางชีวภาพอาเซียนเพื่อปกป้องระบบนิเวศ",
+        btn_launch: "เปิดใช้งานแพลตฟอร์ม", btn_browse: "เรียกดูโมดูล", btn_play: "เล่นเกมเชิงนิเวศ", header_customizer: "เปลี่ยนภาพหัวข้อ:",
+        btn_bg_default: "ค่าเริ่มต้น", btn_bg_forest: "ป่าไม้", btn_bg_marine: "ทะเล", btn_bg_coastal: "ชายฝั่ง", btn_bg_upload: "อัปโหลดภาพ",
+        features_title: "เสาหลักและดัชนีชี้วัด", features_subtitle: "ค่านิยมหลักที่ขับเคลื่อนการเคลื่อนไหวด้านสิ่งแวดล้อม",
+        pillar_1_title: "มุ่งเน้นความหลากหลายทางชีวภาพอาเซียน", pillar_1_desc: "ออกแบบมาเป็นพิเศษสำหรับสิ่งมีชีวิตประจำถิ่นในเอเชียตะวันออกเฉียงใต้",
+        pillar_2_title: "แผนที่แบบโต้ตอบ", pillar_2_desc: "สำรวจพื้นที่เขตอนุรักษ์สัตว์ป่าในเวลาจริง",
+        pillar_3_title: "เนื้อหาการเรียนรู้ขนาดย่อย", pillar_3_desc: "บทเรียนกระชับเข้าใจง่ายสำหรับเยาวชน", click_open_modules: "เปิด 5 โมดูล →",
+        pillar_4_title: "เกมการศึกษา", pillar_4_desc: "การเรียนรู้ผ่านเกมที่เปลี่ยนแนวคิดนิเวศวิทยาให้สนุกสนาน",
+        pillar_5_title: "การตระหนักรู้ด้านชีวภาพ", pillar_5_desc: "เสริมสร้างเยาวชนรุ่นใหม่ด้วยทัศนคติการอนุรักษ์",
+        our_vision_tag: "วิสัยทัศน์ของเรา", vision_quote: '"เสริมพลังเยาวชนทั่วอาเซียนด้วยการศึกษาด้านความหลากหลายทางชีวภาพที่เข้าถึงง่าย"',
+        p_innovate: "นวัตกรรม", p_involve: "มีส่วนร่วม", p_impact: "ผลกระทบ",
+        innovate_1: "แพลตฟอร์มดิจิทัล.", innovate_2: "เว็บไซต์แบบโต้ตอบ.", innovate_3: "การศึกษาเข้าถึงง่าย.",
+        involve_1: "เยาวชนอาเซียน.", involve_2: "ประสบการณ์การเรียนรู้.", involve_3: "การศึกษานอกห้องเรียน.",
+        impact_1: "แรงบันดาลใจเยาวชน.", impact_2: "เปลี่ยนความรู้เป็น عمل.", impact_3: "การอนุรักษ์ยั่งยืน.",
+        partner_sub: "ร่วมมือกับเรา", partner_title: "ร่วมเป็นพันธมิตร", partner_desc: "เชิญชวนองค์กรพัฒนาเอกชนและสถาบันการศึกษาร่วมมือกัน",
+        partner_check_1: "ร่วมสร้างโมดูลการเรียนรู้", partner_check_2: "สนับสนุนแคมเปญสิ่งแวดล้อมเยาวชน",
+        form_title: "ใบสมัครพันธมิตร", form_org: "ชื่อองค์กร", form_email: "อีเมล", form_type: "ประเภทพันธมิตร", form_btn: "ส่งคำขอ",
+        footer_tag: "เสริมพลังเยาวชนอาเซียนเพื่อสิ่งแวดล้อม",
+        launch_modal_title: "แพลตฟอร์มพร้อมใช้งาน!", launch_modal_desc: "ยินดีต้อนรับสู่แดชบอร์ด Aequitas", launch_modal_btn: "เข้าสู่แดชบอร์ด",
+        browse_modal_title: "โมดูลการเรียนรู้", browse_modal_sub: "เลือกโมดูลเพื่อเริ่มเรียนรู้:",
+        mod_1_title: "โมดูล 1: สิ่งมีชีวิตประจำถิ่นในป่าฝน", mod_1_sub: "นกกกและอุรังอุตัง", mod_1_time: "5 นาที",
+        mod_2_title: "โมดูล 2: ชีวิตทางทะเลและสามเหลี่ยมปะการัง", mod_2_sub: "เต่าทะเลและแนวปะการัง", mod_2_time: "7 นาที",
+        mod_3_title: "โมดูล 3: ระบบนิเวศป่าชายเลนอาเซียน", mod_3_sub: "คาร์บอนสีน้ำเงินและป่าชายเลน", mod_3_time: "6 นาที",
+        mod_4_title: "โมดูล 4: การปกป้องสัตว์ป่าใกล้สูญพันธุ์", mod_4_sub: "เสือโคร่งและช้างเอเชีย", mod_4_time: "8 นาที",
+        mod_5_title: "โมดูล 5: การทำงานด้านภูมิอากาศเยาวชน", mod_5_sub: "SDG 14 และ SDG 15", mod_5_time: "5 นาที",
+        btn_back_list: "← ย้อนกลับ", btn_complete: "เรียนเสร็จสิ้น ✨",
+        game_title: "ท้าทายจัดหมวดหมู่นิเวศ", game_subtitle: "ระบุถิ่นที่อยู่ของสัตว์ชนิดนี้ให้ถูกต้อง!", btn_marine_life: "สิ่งมีชีวิตทางทะเล", btn_forest_biome: "ไบโอมป่าไม้", perfect_score_title: "🎉 คะแนนเต็ม! 🎉", gift_desc: "คุณตอบถูกต้อง 10/10 ข้อ! คลิกกล่องของขวัญด้านล่าง:", gift_open_btn: "เปิดของขวัญ", play_again: "เล่นอีกครั้ง"
+      },
+      my: {
+        nav_vision: "မျှော်မှန်းချက်", nav_features: "အင်္ဂါရပ်များ", nav_explore: "မြေပုံကြည့်ရန်", nav_partner: "မိတ်ဖက်",
+        hero_badge: "အာဆီယံ လူငယ်များအား မြှင့်တင်ရန်", hero_title: "အာဆီယံ ဇီဝမျိုးစုံမျိုးကွဲ ပညာပေး",
+        hero_subtitle: "အပြန်အလှန် လေ့လာရေး သင်ခန်းစာများနှင့် မြေပုံထုတ်လုပ်ခြင်း။",
+        btn_launch: "စတင်ရန်", btn_browse: "သင်ခန်းစာများ ကြည့်ရန်", btn_play: "ဂိမ်းဆော့ရန်", header_customizer: "ပုံပြောင်းရန် -",
+        btn_bg_default: "မူလပုံစံ", btn_bg_forest: "သစ်တော", btn_bg_marine: "ပင်လယ်", btn_bg_coastal: "ကမ်းခြေ", btn_bg_upload: "ပုံတင်ရန်",
+        features_title: "ပင်မ မဏ္ဍိုင်များ", features_subtitle: "သဘာဝပတ်ဝန်းကျင် တိုးတက်ရေး တန်ဖိုးများ",
+        pillar_1_title: "ဇီဝမျိုးစုံမျိုးကွဲ အထူးပြု", pillar_1_desc: "အရှေ့တောင်အာရှ ဒေသရင်း မျိုးစိတ်များအတွက်။",
+        pillar_2_title: "အပြန်အလှန် မြေပုံ", pillar_2_desc: "တောရိုင်းတိရစ္ဆာန် ဘေးမဲ့တောများ လေ့လာရန်။",
+        pillar_3_title: "လိုတိုရှင်း သင်ခန်းစာ", pillar_3_desc: "လူငယ်များ လွယ်ကူစွာ နားလည်နိုင်သော သင်ခန်းစာများ။", click_open_modules: "သင်ခန်းစာ ၅ ခု ကြည့်ရန် →",
+        pillar_4_title: "ပညာပေး ဂိမ်းများ", pillar_4_desc: "ဂေဟစနစ် ပညာပေး ဂိမ်းများ။",
+        pillar_5_title: "သဘာဝ ထိန်းသိမ်းရေး", pillar_5_desc: "မျိုးဆက်သစ်များအတွက် သဘာဝပတ်ဝန်းကျင် အသိပညာ။",
+        our_vision_tag: "ကျွန်ုပ်တို့၏ မျှော်မှန်းချက်", vision_quote: '"အာဆီယံ လူငယ်များအား သဘာဝပတ်ဝန်းကျင် ထိန်းသိမ်းရေး ပညာပေးရန်။"',
+        p_innovate: "တီထွင်ဆန်းသစ်မှု", p_involve: "ပူးပေါင်းပါဝင်မှု", p_impact: "သက်ရောက်မှု",
+        innovate_1: "ဒီဂျစ်တယ် ပလက်ဖောင်း။", innovate_2: "ဝဘ်ဆိုက် ပြုလုပ်ခြင်း။", innovate_3: "ပညာရေး ရရှိစေခြင်း။",
+        involve_1: "အာဆီယံ လူငယ်များ။", involve_2: "သင်ယူမှု အတွေ့အကြုံ။", involve_3: "စာသင်ခန်းပြင်ပ ပညာရေး။",
+        impact_1: "လူငယ်များ ပါဝင်ရေး။", impact_2: "လက်တွေ့ လုပ်ဆောင်မှု။", impact_3: "သဘာဝ ထိန်းသိမ်းရေး။",
+        partner_sub: "ပူးပေါင်းပါဝင်ရန်", partner_title: "မိတ်ဖက် ဖြစ်လာရန်", partner_desc: "အဖွဲ့အစည်းများနှင့် ပညာရေး ဌာနများကို ဖိတ်ခေါ်ပါသည်။",
+        partner_check_1: "သင်ခန်းစာများ အတူတကွ ဖန်တီးရန်", partner_check_2: "လူငယ် လှုပ်ရှားမှုများကို ကူညီရန်",
+        form_title: "မိတ်ဖက် လျှောက်လွှာ", form_org: "အဖွဲ့အစည်း အမည်", form_email: "အီးမေးလ်", form_type: "မိတ်ဖက် အမျိုးအစား", form_btn: "လျှောက်လွှာ တင်ရန်",
+        footer_tag: "အာဆီယံ လူငယ်များ သဘာဝ ထိန်းသိမ်းရေး",
+        launch_modal_title: "အသင့်ဖြစ်ပါပြီ!", launch_modal_desc: "Aequitas သို့ ကြိုဆိုပါသည်။", launch_modal_btn: "ဝင်ရောက်ရန်",
+        browse_modal_title: "သင်ခန်းစာများ", browse_modal_sub: "လေ့လာလိုသော သင်ခန်းစာကို ရွေးပါ -",
+        mod_1_title: "မော်ဂျူး ၁ - မိုးသစ်တော မျိုးစိတ်များ", mod_1_sub: "အောက်ချင်းငှက်နှင့် အိုရန်အူတန်", mod_1_time: "၅ မိနစ်",
+        mod_2_title: "မော်ဂျူး ၂ - ပင်လယ် သဘာဝ", mod_2_sub: "လိပ်များနှင့် သန္တာကျောက်တန်း", mod_2_time: "၇ မိနစ်",
+        mod_3_title: "မော်ဂျူး ၃ - လမုတော ဂေဟစနစ်", mod_3_sub: "အပြာရောင် ကာဘွန်", mod_3_time: "၆ မိနစ်",
+        mod_4_title: "မော်ဂျူး ၄ - ရှားပါး တိရစ္ဆာန်များ", mod_4_sub: "ကျားနှင့် ဆင်များ", mod_4_time: "၈ မိနစ်",
+        mod_5_title: "မော်ဂျူး ၅ - လူငယ် လှုပ်ရှားမှု", mod_5_sub: "SDG 14 နှင့် 15", mod_5_time: "၅ မိနစ်",
+        btn_back_list: "← နောက်သို့", btn_complete: "ပြီးစီးပါပြီ ✨",
+        game_title: "ဂေဟစနစ် ဂိမ်း", game_subtitle: "တိရစ္ဆာန်များ၏ နေထိုင်ရာကို မှန်ကန်စွာ ရွေးပါ -", btn_marine_life: "ပင်လယ် သဘာဝ", btn_forest_biome: "သစ်တော ဂေဟစနစ်", perfect_score_title: "🎉 အမှတ်ပြည့် ရရှိသည်! 🎉", gift_desc: "၁၀/၁၀ မှန်ကန်စွာ ဖြေဆိုနိုင်ခဲ့သည်။ လက်ဆောင်ပုံးကို နှိပ်ပါ -", gift_open_btn: "လက်ဆောင် ဖွင့်ရန်", play_again: "ထပ်မံ ဆော့ရန်"
+      },
+      km: {
+        nav_vision: "ចក្ខុវិស័យ", nav_features: "លក្ខណៈពិសេស", nav_explore: "រុករកផែនទី", nav_partner: "ដៃគូ",
+        hero_badge: "ផ្តល់អំណាចដល់យុវជន", hero_title: "ចំណេះដឹងជីវចម្រុះអាស៊ាន",
+        hero_subtitle: "ការរៀនសូត្រអន្តរកម្ម និងផែនទីជីវចម្រុះដើម្បីការពារប្រព័ន្ធអេកូឡូស៊ី។",
+        btn_launch: "បើកដំណើរការ", btn_browse: "មើលម៉ូឌុល", btn_play: "លេងហ្គេម", header_customizer: "ផ្លាស់ប្តូររូបភាព៖",
+        btn_bg_default: "ដើម", btn_bg_forest: "ព្រៃឈើ", btn_bg_marine: "សមុទ្រ", btn_bg_coastal: "ឆ្នេរ", btn_bg_upload: "ផ្ទុកឡើង",
+        features_title: "សសរទ្រទ្រង់ចម្បង", features_subtitle: "តម្លៃស្នូលដែលដឹកនាំសកម្មភាពបរិស្ថាន",
+        pillar_1_title: "ផ្តោតលើជីវចម្រុះអាស៊ាន", pillar_1_desc: "រៀបចំឡើងជាពិសេសសម្រាប់ប្រភេទសត្វក្នុងតំបន់អាស៊ីអាគ្នេយ៍។",
+        pillar_2_title: "ផែនទីអន្តរកម្ម", pillar_2_desc: "រុករកតំបន់ការពារសត្វព្រៃក្នុងពេលជាក់ស្តែង។",
+        pillar_3_title: "មេរៀនខ្លីៗ", pillar_3_desc: "មេរៀនងាយយល់សម្រាប់យុវជន។", click_open_modules: "បើកមើល ៥ ម៉ូឌុល →",
+        pillar_4_title: "ហ្គេមអប់រំ", pillar_4_desc: "ការរៀនតាមរយៈហ្គេមដែលសប្បាយរីករាយ។",
+        pillar_5_title: "ការយល់ដឹងពីជីវចម្រុះ", pillar_5_desc: "ផ្តល់ចំណេះដឹងបរិស្ថានដល់ជំនាន់ក្រោយ។",
+        our_vision_tag: "ចក្ខុវិស័យរបស់យើង", vision_quote: '"ផ្តល់អំណាចដល់យុវជននៅទូទាំងអាស៊ានតាមរយៈការអប់រំជីវចម្រុះ។"',
+        p_innovate: "បច្ចេកវិទ្យា", p_involve: "ចូលរួម", p_impact: "ផលប៉ះពាល់",
+        innovate_1: "វេទិកាឌីជីថល។", innovate_2: "គេហទំព័រអន្តរកម្ម។", innovate_3: "ការអប់រំងាយស្រួល។",
+        involve_1: "យុវជនអាស៊ាន។", involve_2: "បទពិសោធន៍រៀនសូត្រ។", involve_3: "ការអប់រំក្រៅថ្នាក់។",
+        impact_1: "ការចូលរួមរបស់យុវជន។", impact_2: "សកម្មភាពជាក់ស្តែង។", impact_3: "ការអភិរក្ស។",
+        partner_sub: "សហការជាមួយយើង", partner_title: "ក្លាយជាដៃគូ", partner_desc: "អញ្ជើញអង្គការ និងគ្រឹះស្ថានសិក្សាចូលរួម។",
+        partner_check_1: "បង្កើតម៉ូឌុលសិក្សាជាមួយគ្នា", partner_check_2: "ឧបត្ថម្ភយុទ្ធនាការបរិស្ថាន",
+        form_title: "ពាក្យសុំធ្វើជាដៃគូ", form_org: "ឈ្មោះអង្គភាព", form_email: "អ៊ីមែល", form_type: "ប្រភេទដៃគូ", form_btn: "ផ្ញើពាក្យសុំ",
+        footer_tag: "ផ្តល់អំណាចដល់យុវជនអាស៊ានដើម្បីបរិស្ថាន",
+        launch_modal_title: "ប្រព័ន្ធរួចរាល់!", launch_modal_desc: "សូមស្វាគមន៍មកកាន់ Aequitas Dashboard។", launch_modal_btn: "ចូលទៅកាន់ Dashboard",
+        browse_modal_title: "ម៉ូឌុលសិក្សា", browse_modal_sub: "ជ្រើសរើសម៉ូឌុលដើម្បីចាប់ផ្តើមរៀន៖",
+        mod_1_title: "ម៉ូឌុលទី ១៖ ប្រភេទសត្វព្រៃក្នុងព្រៃទឹកភ្លៀង", mod_1_sub: "សត្វកេងកង និងអូរ៉ង់អ៊ូតាំង", mod_1_time: "៥ នាទី",
+        mod_2_title: "ម៉ូឌុលទី ២៖ ជីវិតសមុទ្រ និងត្រីកោណផ្កាថ្ម", mod_2_sub: "អណ្តើកសមុទ្រ និងផ្កាថ្ម", mod_2_time: "៧ នាទី",
+        mod_3_title: "ម៉ូឌុលទី ៣៖ ប្រព័ន្ធអេកូឡូស៊ីព្រៃកោងកាង", mod_3_sub: "កាបូនខៀវ និងឆ្នេរ", mod_3_time: "៦ នាទី",
+        mod_4_title: "ម៉ូឌុលទី ៤៖ ការការពារសត្វព្រៃរងគ្រោះថ្នាក់", mod_4_sub: "ខ្លាស៊ូម៉ាត្រា និងដំរី", mod_4_time: "៨ នាទី",
+        mod_5_title: "ម៉ូឌុលទី ៥៖ សកម្មភាពយុវជន និង SDG", mod_5_sub: "SDG 14 និង SDG 15", mod_5_time: "៥ នាទី",
+        btn_back_list: "← ត្រឡប់ក្រោយ", btn_complete: "រៀនចប់ ✨",
+        game_title: "ការប្រកួតបែងចែកប្រព័ន្ធអេកូ", game_subtitle: "ជ្រើសរើសជម្រកសត្វឱ្យបានត្រឹមត្រូវ!", btn_marine_life: "ជីវិតសមុទ្រ", btn_forest_biome: "ព្រៃឈើ", perfect_score_title: "🎉 ពិន្ទុពេញ! 🎉", gift_desc: "អ្នកឆ្លើយត្រូវ ១០/១០! ចុចលើប្រអប់កាដូ៖", gift_open_btn: "បើកកាដូ", play_again: "លេងម្តងទៀត"
+      },
+      lo: {
+        nav_vision: "ວິໄສທັດ", nav_features: "ຄຸນສົມບັດ", nav_explore: "ສຳຫຼວດແຜນທີ່", nav_partner: "ຄູ່ຮ່ວມມື",
+        hero_badge: "ສ້າງພະລັງໃຫ້ເຍົາວະຊົນ", hero_title: "ຄວາມຮູ້ດ້ານຊີວະນາໆພັນອາຊຽນ",
+        hero_subtitle: "ການຮຽນຮູ້ແບບໂຕ້ຕອບ ແລະ ແຜນທີ່ຊີວະນາໆພັນອາຊຽນ.",
+        btn_launch: "ເລີ່ມຕົ້ນ", btn_browse: "ເບິ່ງໂມດູນ", btn_play: "ຫຼິ້ນເກມ", header_customizer: "ປ່ຽນຮູບຫົວຂໍ້:",
+        btn_bg_default: "ເລີ່ມຕົ້ນ", btn_bg_forest: "ປ່າໄມ້", btn_bg_marine: "ທະເລ", btn_bg_coastal: "ຊາຍຝັ່ງ", btn_bg_upload: "ອັບໂຫຼດຮູບ",
+        features_title: "ເສົາຫຼັກ ແລະ ຕົວຊີ້ວັດ", features_subtitle: "ຄ່ານິຍົມຫຼັກທີ່ຂັບເຄື່ອນການປົກປ້ອງສິ່ງແວດລ້ອມ",
+        pillar_1_title: "ເນັ້ນໃສ່ຊີວະນາໆພັນອາຊຽນ", pillar_1_desc: "ອອກແບບມາ спеціально សម្រាប់ສາຍພັນພື້ນເມືອງ.",
+        pillar_2_title: "ແຜນທີ່ແບບໂຕ້ຕອບ", pillar_2_desc: "ສຳຫຼວດເຂດອະນຸລັກສັດປ່າແບບ real-time.",
+        pillar_3_title: "ເນື້ອຫາການຮຽນຮູ້ສັ້ນ", pillar_3_desc: "ບົດຮຽນກະທັດຮັດສຳລັບເຍົາວະຊົນ.", click_open_modules: "ເປີດ 5 ໂມດູນ →",
+        pillar_4_title: "ເກມການສຶກສາ", pillar_4_desc: "ເກມການຮຽນຮູ້ທີ່ມ່ວນຊື່ນ.",
+        pillar_5_title: "ຄວາມຮູ້ດ້ານຊີວະນາໆພັນ", pillar_5_desc: "ສ້າງຈິດສຳນຶກການອະນຸລັກໃຫ້ຄົນรุ่นໃໝ່.",
+        our_vision_tag: "ວິໄສທັດຂອງພວກເຮົາ", vision_quote: '"ສ້າງພະລັງໃຫ້ເຍົາວະຊົນທົ່ວອາຊຽນດ້ວຍການສຶກສາດ້ານຊີວະນາໆພັນ."',
+        p_innovate: "ນວັດຕະກໍາ", p_involve: "ມີສ່ວນຮ່ວມ", p_impact: "ຜົນກະທົບ",
+        innovate_1: "ແພລັດຟອມດິຈິທັນ.", innovate_2: "ເວັບໄຊແບບໂຕ້ຕອບ.", innovate_3: "ການສຶກສາເຂົ້າເຖິງງ່າຍ.",
+        involve_1: "ເຍົາວະຊົນອາຊຽນ.", involve_2: "ປະສົບການການຮຽນຮູ້.", involve_3: "ການສຶກສານອກຮ້ອງຮຽນ.",
+        impact_1: "ແຮງບັນດານໃຈ.", impact_2: "ການລົງມືເຮັດจริง.", impact_3: "ການອະນຸລັກຢ່າງຍືນຍົງ.",
+        partner_sub: "ຮ່ວມມືກັບພວກເຮົາ", partner_title: "ຮ່ວມເປັນຄູ່ຮ່ວມມື", partner_desc: "ເຊີນຊວນອົງການຈັດຕັ້ງ ແລະ ໂຮງຮຽນຮ່ວມມືກັນ.",
+        partner_check_1: "ສ້າງໂມດູນການຮຽນຮູ້ຮ່ວມກັນ", partner_check_2: "ສະໜັບສະໜູນແຄມເປນສິ່ງແວດລ້ອມ",
+        form_title: "ແບບຟອມຄູ່ຮ່ວມມື", form_org: "ຊື່ອົງການ", form_email: "ອີເມວ", form_type: "ປະເພດຄູ່ຮ່ວມມື", form_btn: "ສົ່ງແບບຟອມ",
+        footer_tag: "ສ້າງພະລັງໃຫ້ເຍົາວະຊົນອາຊຽນເພື່ອສິ່ງແວດລ້ອມ",
+        launch_modal_title: "ແພລັດຟອມພ້ອມແລ້ວ!", launch_modal_desc: "ຍິນດີຕ້ອນຮັບสู่ Aequitas Dashboard.", launch_modal_btn: "ເຂົ້າสู่ Dashboard",
+        browse_modal_title: "ໂມດູນການຮຽນຮູ້", browse_modal_sub: "ເລືອກໂມດູນເພື່ອເລີ່ມຮຽນ:",
+        mod_1_title: "ໂມດູນ 1: ສາຍພັນພື້ນເມືອງໃນປ່າດົງດິບ", mod_1_sub: "ນົກເງືອກ ແລະ ອູລັງອຸຕັງ", mod_1_time: "5 ນາທີ",
+        mod_2_title: "ໂມດູນ 2: ຊີວິດທາງທະເລ ແລະ ສາມຫຼ່ຽມປະກາລັງ", mod_2_sub: "ເຕົ່າທະເລ ແລະ ປະກາລັງ", mod_2_time: "7 ນາທີ",
+        mod_3_title: "ໂມດູນ 3: ລະບົບນິເວດປ່າຊາຍເລນອາຊຽນ", mod_3_sub: "ຄາບອນສີຟ້າ ແລະ ຊາຍຝັ່ງ", mod_3_time: "6 ນາທີ",
+        mod_4_title: "ໂມດູນ 4: ການປົກປ້ອງສັດປ່າທີ່ໃກ້ສູນພັນ", mod_4_sub: "ເສືອ ແລະ ຊ້າງອາຊີ", mod_4_time: "8 ນາທີ",
+        mod_5_title: "ໂມດູນ 5: ການເຄື່ອນໄຫວດ້ານພູມອາກາດ", mod_5_sub: "SDG 14 ແລະ SDG 15", mod_5_time: "5 ນາທີ",
+        btn_back_list: "← ຍ້ອນກັບ", btn_complete: "ຮຽນສໍາເລັດ ✨",
+        game_title: "ເກມຈັດໝວດໝູ່ນິເວດ", game_subtitle: "ເລືອກທີ່ຢູ່ຂອງສັດໃຫ້ຖືກຕ້ອງ!", btn_marine_life: "ຊີວິດທາງທະເລ", btn_forest_biome: "ປ່າໄມ້", perfect_score_title: "🎉 ຄະແນນເຕັມ! 🎉", gift_desc: "ທ່ານຕອບຖືກ 10/10! ກົດກ່ອງຂອງຂວັນດ້ານລຸ່ມ:", gift_open_btn: "ເປີດຂອງຂວັນ", play_again: "ຫຼິ້ນອີກຄັ້ງ"
+      }
+    };
+
+    function changeLanguage(lang) {
+      currentLanguage = lang;
+      playClickSound();
+      
+      const langSelect = document.getElementById('langSelect');
+      const mobileLangSelect = document.getElementById('mobileLangSelect');
+      if (langSelect) langSelect.value = lang;
+      if (mobileLangSelect) mobileLangSelect.value = lang;
+
+      const data = translations[lang] || translations['en'];
+      
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (data[key]) el.textContent = data[key];
+      });
+
+      if (!document.getElementById('modalGame').classList.contains('hidden')) {
+        renderQuestion();
+      }
+    }
+
+    function getModuleData(lang, id) {
+      if (learningModulesData[lang] && learningModulesData[lang][id]) {
+        return learningModulesData[lang][id];
+      }
+      return learningModulesData['en'][id];
+    }
+
+    function openBrowseModules() {
+      playClickSound();
+      closeModal('modalLaunch');
+      document.getElementById('modalBrowse').classList.remove('hidden');
+      document.body.classList.add('modal-active');
+    }
+
+    function openModuleDetail(id) {
+      playClickSound();
+      const mod = getModuleData(currentLanguage, id);
+      if (!mod) return;
+
+      document.getElementById('modalBrowse').classList.add('hidden');
+      document.getElementById('detailModuleBadge').textContent = `Module 0${id} of 05`;
+      document.getElementById('detailModuleTitle').textContent = mod.title;
+      document.getElementById('detailModuleDesc').innerHTML = mod.desc;
+
+      document.getElementById('modalModuleDetail').classList.remove('hidden');
+      document.body.classList.add('modal-active');
+    }
+
+    function closeModuleDetail() {
+      playClickSound();
+      document.getElementById('modalModuleDetail').classList.add('hidden');
+      document.body.classList.remove('modal-active');
+    }
+
+    function completeModule() {
+      playWinSound();
+      alert('Congratulations! You have completed this learning module.');
+      closeModuleDetail();
+    }
+
+    function resetHeaderBg() {
+      playClickSound();
+      const bg = document.getElementById('headerBgImage');
+      bg.style.backgroundImage = 'none';
+      bg.style.opacity = '0';
+    }
+
+    function changeHeaderBg(url) {
+      playClickSound();
+      const bg = document.getElementById('headerBgImage');
+      bg.style.backgroundImage = `url('${url}')`;
+      bg.style.opacity = '0.4';
+    }
+
+    function uploadHeaderBg(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) { changeHeaderBg(evt.target.result); };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    const ecoQuestions = [
+      { icon: '🐢', title: 'Sea Turtle', desc: 'Ancient marine species migrating across regional ASEAN seas.', category: 'marine' },
+      { icon: '🦧', title: 'Orangutan', desc: 'Inhabits dense tropical rainforest canopies.', category: 'forest' },
+      { icon: '🐬', title: 'Irrawaddy Dolphin', desc: 'Aquatic mammal inhabiting coastal waters & river mouths.', category: 'marine' },
+      { icon: '🐅', title: 'Sumatran Tiger', desc: 'Apex predator inside deep tropical rainforests.', category: 'forest' },
+      { icon: '🪸', title: 'Coral Reefs', desc: 'Biodiverse underwater ecosystem.', category: 'marine' },
+      { icon: '🐘', title: 'Bornean Pygmy Elephant', desc: 'Unique land mammal living in dense forest vegetation.', category: 'forest' },
+      { icon: '🦈', title: 'Whale Shark', desc: 'Largest fish filtering plankton in warm waters.', category: 'marine' },
+      { icon: '🦏', title: 'Javan / Sumatran Rhino', desc: 'Rare endemic wildlife in lowland forest reserves.', category: 'forest' },
+      { icon: '🦀', title: 'Mangrove Crab', desc: 'Thrives in mangrove coastal areas.', category: 'marine' },
+      { icon: '🦜', title: 'Hornbill', desc: 'Key seed disperser bird for forest regeneration.', category: 'forest' }
+    ];
+
+    const aseanFaunaPrizes = [
+      { icon: '🦧', name: 'Bornean Orangutan', origin: '🇮🇩 Indonesia & 🇲🇾 Malaysia', desc: 'Intelligent primate of Southeast Asian tropical forest canopies.' },
+      { icon: '🐅', name: 'Indochinese Tiger', origin: '🇹🇭 Thailand, 🇻🇳 Vietnam, 🇱🇦 Laos', desc: 'Majestic apex predator of ASEAN highland forests.' },
+      { icon: '🦎', name: 'Komodo Dragon', origin: '🇮🇩 Indonesia', desc: 'Largest living lizard on Earth found in Komodo Islands.' },
+      { icon: '🐘', name: 'Asian Elephant', origin: '🇲🇲 Myanmar, 🇹🇭 Thailand, 🇰🇭 Cambodia', desc: 'Symbol of natural strength and tropical wilderness.' },
+      { icon: '🦅', name: 'Philippine Eagle', origin: '🇵🇭 Philippines', desc: 'Magnificent raptor protected in the rainforests of the Philippines.' }
+    ];
+
+    let currentQuestionIndex = 0;
+    let correctAnswersCount = 0;
+
+    function startBGM() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const notes = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63]; 
+      let index = 0;
+      if (bgmInterval) clearInterval(bgmInterval);
+      bgmInterval = setInterval(() => {
+        if (!audioCtx || document.getElementById('modalGame').classList.contains('hidden')) {
+          clearInterval(bgmInterval);
+          return;
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(notes[index], audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.4);
+        index = (index + 1) % notes.length;
+      }, 500);
+    }
+
+    function stopBGM() {
+      if (bgmInterval) {
+        clearInterval(bgmInterval);
+        bgmInterval = null;
+      }
+    }
+
+    function playClickSound() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.1);
+    }
+
+    function playWinSound() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+      osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.3);
+    }
+
+    function openModal(id) {
+      playClickSound();
+      document.getElementById(id).classList.remove('hidden');
+      document.body.classList.add('modal-active');
+    }
+
+    function closeModal(id) {
+      playClickSound();
+      document.getElementById(id).classList.add('hidden');
+      document.body.classList.remove('modal-active');
+    }
+
+    function openGameModal() {
+      playClickSound();
+      resetGame();
+      document.getElementById('modalGame').classList.remove('hidden');
+      document.body.classList.add('modal-active');
+      startBGM();
+    }
+
+    function closeGameModal() {
+      playClickSound();
+      stopBGM();
+      document.getElementById('modalGame').classList.add('hidden');
+      document.body.classList.remove('modal-active');
+    }
+
+    function renderQuestion() {
+      const q = ecoQuestions[currentQuestionIndex];
+      document.getElementById('gameProgressText').textContent = `Question ${currentQuestionIndex + 1} of 10`;
+      document.getElementById('gameItemIcon').textContent = q.icon;
+      document.getElementById('gameItemTitle').textContent = q.title;
+      document.getElementById('gameItemDesc').textContent = q.desc;
+      document.getElementById('gameFeedback').innerHTML = '';
+    }
+
+    function playGameAnswer(choice) {
+      const currentQ = ecoQuestions[currentQuestionIndex];
+      if (choice === currentQ.category) {
+        playWinSound();
+        correctAnswersCount++;
+        document.getElementById('gameFeedback').innerHTML = `<span class="text-emerald-600">Correct! ✨</span>`;
+      } else {
+        playClickSound();
+        document.getElementById('gameFeedback').innerHTML = `<span class="text-rose-600">Incorrect!</span>`;
+      }
+      setTimeout(() => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < ecoQuestions.length) {
+          renderQuestion();
+        } else {
+          finishGame();
+        }
+      }, 700);
+    }
+
+    function finishGame() {
+      document.getElementById('gameMainContainer').classList.add('hidden');
+      if (correctAnswersCount === 10) {
+        document.getElementById('giftBoxContainer').classList.remove('hidden');
+      } else {
+        document.getElementById('gameMainContainer').classList.remove('hidden');
+        document.getElementById('gameProgressText').textContent = `Completed! Score: ${correctAnswersCount}/10`;
+        document.getElementById('gameFeedback').innerHTML = `<span class="text-slate-700">Try again for 10/10!</span>`;
+      }
+    }
+
+    function openGiftBox() {
+      playWinSound();
+      document.getElementById('giftBoxContainer').classList.add('hidden');
+      const randomFauna = aseanFaunaPrizes[Math.floor(Math.random() * aseanFaunaPrizes.length)];
+      document.getElementById('congratulationsText').textContent = `Congratulations, you've got a ${randomFauna.name}!`;
+      document.getElementById('prizeIcon').textContent = randomFauna.icon;
+      document.getElementById('prizeName').textContent = randomFauna.name;
+      document.getElementById('prizeOrigin').textContent = randomFauna.origin;
+      document.getElementById('prizeDesc').textContent = randomFauna.desc;
+      document.getElementById('prizeResultContainer').classList.remove('hidden');
+    }
+
+    function resetGame() {
+      currentQuestionIndex = 0;
+      correctAnswersCount = 0;
+      document.getElementById('gameMainContainer').classList.remove('hidden');
+      document.getElementById('giftBoxContainer').classList.add('hidden');
+      document.getElementById('prizeResultContainer').classList.add('hidden');
+      renderQuestion();
+    }
+
+    function handlePartnerSubmit(e) {
+      e.preventDefault();
+      playWinSound();
+      alert('Thank you! Your partnership request has been submitted.');
+      e.target.reset();
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    }
+  </script>
+</body>
+</html>
