@@ -347,7 +347,6 @@
       <p class="text-xs text-slate-500 mb-6" data-i18n="browse_modal_sub">Select one of the 5 modules below to explore ASEAN biodiversity interactively:</p>
       
       <div class="space-y-3">
-        <!-- Modul 1 -->
         <div onclick="openModuleDetail(1)" class="p-4 rounded-xl border border-slate-200 hover:border-brandCyan hover:bg-cyan-50/40 transition-all cursor-pointer flex justify-between items-center group">
           <div>
             <h4 class="font-bold text-slate-800 group-hover:text-brandCyan transition-colors" data-i18n="mod_1_title">Module 1: Rain Forest Endemic Species</h4>
@@ -356,7 +355,6 @@
           <span class="text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full"><span data-i18n="mod_1_time">5 mins</span> <i class="fa-solid fa-chevron-right ml-1"></i></span>
         </div>
 
-        <!-- Modul 2 -->
         <div onclick="openModuleDetail(2)" class="p-4 rounded-xl border border-slate-200 hover:border-brandCyan hover:bg-cyan-50/40 transition-all cursor-pointer flex justify-between items-center group">
           <div>
             <h4 class="font-bold text-slate-800 group-hover:text-brandCyan transition-colors" data-i18n="mod_2_title">Module 2: Marine Life & Coral Triangle</h4>
@@ -365,7 +363,6 @@
           <span class="text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full"><span data-i18n="mod_2_time">7 mins</span> <i class="fa-solid fa-chevron-right ml-1"></i></span>
         </div>
 
-        <!-- Modul 3 -->
         <div onclick="openModuleDetail(3)" class="p-4 rounded-xl border border-slate-200 hover:border-brandCyan hover:bg-cyan-50/40 transition-all cursor-pointer flex justify-between items-center group">
           <div>
             <h4 class="font-bold text-slate-800 group-hover:text-brandCyan transition-colors" data-i18n="mod_3_title">Module 3: Mangrove Ecosystems in ASEAN</h4>
@@ -374,7 +371,6 @@
           <span class="text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full"><span data-i18n="mod_3_time">6 mins</span> <i class="fa-solid fa-chevron-right ml-1"></i></span>
         </div>
 
-        <!-- Modul 4 -->
         <div onclick="openModuleDetail(4)" class="p-4 rounded-xl border border-slate-200 hover:border-brandCyan hover:bg-cyan-50/40 transition-all cursor-pointer flex justify-between items-center group">
           <div>
             <h4 class="font-bold text-slate-800 group-hover:text-brandCyan transition-colors" data-i18n="mod_4_title">Module 4: Endangered Wildlife Protection</h4>
@@ -383,7 +379,6 @@
           <span class="text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full"><span data-i18n="mod_4_time">8 mins</span> <i class="fa-solid fa-chevron-right ml-1"></i></span>
         </div>
 
-        <!-- Modul 5 -->
         <div onclick="openModuleDetail(5)" class="p-4 rounded-xl border border-slate-200 hover:border-brandCyan hover:bg-cyan-50/40 transition-all cursor-pointer flex justify-between items-center group">
           <div>
             <h4 class="font-bold text-slate-800 group-hover:text-brandCyan transition-colors" data-i18n="mod_5_title">Module 5: Youth Climate & SDG Action</h4>
@@ -409,9 +404,7 @@
       </div>
 
       <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 mb-6 overflow-y-auto max-h-[50vh] text-sm text-slate-700 space-y-4 shadow-inner">
-        <div id="detailModuleDesc" class="leading-relaxed space-y-3">
-          <!-- Diisi lengkap via JavaScript -->
-        </div>
+        <div id="detailModuleDesc" class="leading-relaxed space-y-3"></div>
       </div>
 
       <div class="flex gap-3 flex-shrink-0">
@@ -443,7 +436,7 @@
         <p class="text-slate-600 text-xs mb-4" data-i18n="game_subtitle">Classify the habitat of this species correctly!</p>
 
         <div id="gameCard" class="bg-gradient-to-br from-slate-50 to-emerald-50 p-6 rounded-2xl border-2 border-dashed border-brandGreen mb-6 min-h-[160px] flex flex-col items-center justify-center">
-          <div id="gameItemIcon" class="text-5xl mb-2">🐢</div>
+          <div id="gameItemIcon" class="mb-2"></div>
           <h4 id="gameItemTitle" class="text-xl font-bold text-slate-800">Sea Turtle Habitat</h4>
           <p id="gameItemDesc" class="text-xs text-slate-500 mt-1">Marine Life or Forest Biome?</p>
         </div>
@@ -478,7 +471,7 @@
         <h3 id="congratulationsText" class="text-xl font-extrabold text-brandNavy mb-4">Congratulations, you've got a ...</h3>
         
         <div class="bg-gradient-to-br from-amber-50 to-emerald-50 p-6 rounded-2xl border border-amber-300 shadow-inner mb-6">
-          <div id="prizeIcon" class="text-7xl mb-3">🦧</div>
+          <div id="prizeIcon" class="mb-3"></div>
           <h4 id="prizeName" class="text-2xl font-black text-brandNavy">Bornean Orangutan</h4>
           <p id="prizeOrigin" class="text-xs font-semibold text-brandCyan mb-2">🇮🇩 Indonesia & 🇲🇾 Malaysia</p>
           <p id="prizeDesc" class="text-xs text-slate-600 italic">One of the most intelligent primates in Southeast Asia inhabiting tropical rainforest canopies.</p>
@@ -498,7 +491,6 @@
     let bgmInterval = null;
     let currentLanguage = 'en';
 
-    // DATABASE KONTEN PEMBELAJARAN MIKRO YANG SANGAT LENGKAP & PANJANG (9 BAHASA)
     const learningModulesData = {
       en: {
         1: { 
@@ -511,7 +503,7 @@
         },
         3: { 
           title: "Module 3: Mangrove Ecosystems in ASEAN", 
-          desc: `<p class="font-semibold text-brandNavy text-base">1. Blue Carbon & Coastal Shielding</p><p>ASEAN member states account for roughly 35% of the entire global mangrove forest coverage. These intertidal forests function as extraordinary 'Blue Carbon' sinks, sequestering atmospheric carbon dioxide at rates up to five times higher per hectare than terrestrial tropical rainforests.</p><p class="font-semibold text-brandNavy text-base mt-4">2. Ecological & Community Benefits</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Natural Disaster Buffer:</strong> Dense root networks attenuate wave energy, protecting vulnerable coastal villages from tsunamis, tropical storms, and rising sea levels.</li><li><strong>ursery Grounds for Fisheries:</strong> Mangrove root systems provide protected breeding grounds for commercially vital shrimp, crabs, and juvenile finfish species.</li><li><strong>Water Filtration:</strong> Roots trap terrestrial sediment and absorb excess nutrients, preventing toxic algal blooms and preserving coastal water clarity.</li></ul><p class="font-semibold text-brandNavy text-base mt-4">3. Restoration Imperatives</p><p>Unregulated aquaculture expansion and coastal urban development have historically depleted mangrove tracts. Community-based replanting and legal zoning protections are critical for restoring these vital ecosystems.</p>`
+          desc: `<p class="font-semibold text-brandNavy text-base">1. Blue Carbon & Coastal Shielding</p><p>ASEAN member states account for roughly 35% of the entire global mangrove forest coverage. These intertidal forests function as extraordinary 'Blue Carbon' sinks, sequestering atmospheric carbon dioxide at rates up to five times higher per hectare than terrestrial tropical rainforests.</p><p class="font-semibold text-brandNavy text-base mt-4">2. Ecological & Community Benefits</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Natural Disaster Buffer:</strong> Dense root networks attenuate wave energy, protecting vulnerable coastal villages from tsunamis, tropical storms, and rising sea levels.</li><li><strong>Nursery Grounds for Fisheries:</strong> Mangrove root systems provide protected breeding grounds for commercially vital shrimp, crabs, and juvenile finfish species.</li><li><strong>Water Filtration:</strong> Roots trap terrestrial sediment and absorb excess nutrients, preventing toxic algal blooms and preserving coastal water clarity.</li></ul><p class="font-semibold text-brandNavy text-base mt-4">3. Restoration Imperatives</p><p>Unregulated aquaculture expansion and coastal urban development have historically depleted mangrove tracts. Community-based replanting and legal zoning protections are critical for restoring these vital ecosystems.</p>`
         },
         4: { 
           title: "Module 4: Endangered Wildlife Protection", 
@@ -552,7 +544,7 @@
         5: { title: "Mô-đun 5: Hành Động Khí Hậu Thanh Niên", desc: `<p class="font-semibold text-brandNavy text-base">1. Vai trò của thanh niên</p><p>Thanh niên ASEAN tiên phong thực hiện các mục tiêu SDG 14 và SDG 15 thông qua giáo dục và công nghệ.</p>` }
       },
       ms: {
-        1: { title: "Modul 1: Spesies Endemik Hutan Hujan", desc: `<p class="font-semibold text-brandNavy text-base">1. Kepentingan Ekologi & Konteks Serantau</p><p>Hutan hujan tropika Asia Tenggara mewakili salah satu pusat biodiversiti terpenting di Bumi, menempatkan hampir 20% spesies global.</p><p class="font-semibold text-brandNavy text-base mt-4">2. Spesies Endemik Utama</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Orangutan Borneo & Sumatra:</strong> Agen penyebar benih penting untuk regenerasi kanopi hutan.</li><li><strong>Burung Enggang:</strong> Dikenali sebagai 'Petani Hutan' yang memastikan kesihatan botani.</li></ul>` },
+        1: { title: "Modul 1: Spesies Endemik Hutan Hujan", desc: `<p class="font-semibold text-brandNavy text-base">1. Kepentingan Ekologi & Konteks Serantau</p><p>Hutan hujan tropika Asia Tenggara mewakili salah satu pusat biodiversiti terpenting di Bumi, menempatkan hampir 20% spesies global.</p><p class="font-semibold text-brandNavy text-base mt-4">2. Spesies Endemik Utama</p><ul class="list-disc pl-5 space-y-2 text-xs text-slate-700"><li><strong>Orangutan Borneo & Sumatra:</strong> Ejen penyebar benih penting untuk regenerasi kanopi hutan.</li><li><strong>Burung Enggang:</strong> Dikenali sebagai 'Petani Hutan' yang memastikan kesihatan botani.</li></ul>` },
         2: { title: "Modul 2: Kehidupan Marin & Segitiga Karang", desc: `<p class="font-semibold text-brandNavy text-base">1. Pusat Biodiversiti Marin Global</p><p>Segitiga Terumbu Karang memelihara 76% spesies karang di Bumi serta menopang kehidupan jutaan penduduk pesisir.</p>` },
         3: { title: "Modul 3: Ekosistem Hutan Bakau ASEAN", desc: `<p class="font-semibold text-brandNavy text-base">1. Karbon Biru & Perlindungan Pesisir</p><p>ASEAN menyumbang 35% perlindungan bakau global sebagai benteng pertahanan bencana alam.</p>` },
         4: { title: "Modul 4: Perlindungan Hidupan Liar Terancam", desc: `<p class="font-semibold text-brandNavy text-base">1. Krisis Megafuna</p><p>Harimau Malaya dan Gajah Asia memerlukan rondaan pencegahan pemburuan haram yang ketat.</p>` },
@@ -583,7 +575,7 @@
         1: { title: "ម៉ូឌុលទី ១៖ ប្រភេទសត្វព្រៃក្នុងព្រៃទឹកភ្លៀង", desc: `<p class="font-semibold text-brandNavy text-base">១. សារៈសំខាន់អេកូឡូស៊ី</p><p>ព្រៃទឹកភ្លៀងអាស៊ីអាគ្នេយ៍គឺជាកន្លែងជីវចម្រុះដ៏សំខាន់បំផុតមួយនៅលើផែនដីដែលមាន ២០% នៃប្រភេទសត្វនិងរុក្ខជាតិពិភពលោក។</p>` },
         2: { title: "ម៉ូឌុលទី ២៖ ជីវិតសមុទ្រ និងត្រីកោណផ្កាថ្ម", desc: `<p class="font-semibold text-brandNavy text-base">១. មជ្ឈមណ្ឌលជីវចម្រុះសមុទ្រ</p><p>ត្រីកោណផ្កាថ្មមាន ៧៦% នៃប្រភេទផ្កាថ្មសរុបនៅលើផែនដី។</p>` },
         3: { title: "ម៉ូឌុលទី ៣៖ ប្រព័ន្ធអេកូឡូស៊ីព្រៃកោងកាង", desc: `<p class="font-semibold text-brandNavy text-base">១. កាបូនខៀវ និងការការពារឆ្នេរ</p><p>អាស៊ានមានផ្ទៃដីព្រៃកោងកាងប្រហែល ៣៥% នៃពិភពលោក។</p>` },
-        4: { title: "ម៉ូឌុលទី ៤៖ ការការពារសត្វព្រៃរងគ្រោះថ្នាក់", desc: `<p class="font-semibold text-brandNavy text-base">១. វិបត្តិសត្វព្រៃ</p><p>ការការពារសត្វជិតផុតពូជតាមរយៈការល្បลาดตระเวน និងកាមេរ៉ាឆ្លាតវៃ។</p>` },
+        4: { title: "ម៉ូឌុលទី ៤៖ ការការពារសត្វព្រៃរងគ្រោះថ្នាក់", desc: `<p class="font-semibold text-brandNavy text-base">១. វិបត្តិសត្វព្រៃ</p><p>ការការពារសត្វជិតផុតពូជតាមរយៈការល្បลาดตระเวន និងកាមេរ៉ាឆ្លាតវៃ។</p>` },
         5: { title: "ម៉ូឌុលទី ៥៖ សកម្មភាពយុវជន និង SDG", desc: `<p class="font-semibold text-brandNavy text-base">១. តួនាទីយុវជន</p><p>ផ្តល់អំណាចដល់យុវជនដឹកនាំសកម្មភាព SDG 14 និង SDG 15។</p>` }
       },
       lo: {
@@ -595,7 +587,7 @@
       }
     };
 
-    // KAMUS TERJEMAHAN PENUH 9 BAHASA ASEAN UNTUK SELURUH HALAMAN UTAMA
+    // KAMUS TERJEMAHAN 9 BAHASA ASEAN UNTUK HALAMAN UTAMA
     const translations = {
       en: {
         nav_vision: "Our Vision", nav_features: "Features", nav_explore: "Explore Map", nav_partner: "Potential Partner",
@@ -696,7 +688,7 @@
         hero_subtitle: "Pembelajaran mikro interaktif dan pemetaan biodiversiti ASEAN untuk melindungi ekosistem.",
         btn_launch: "Pelancaran Platform", btn_browse: "Semak Modul", btn_play: "Main Game Eco", header_customizer: "Tukar Gambar Header:",
         btn_bg_default: "Asal (Biru)", btn_bg_forest: "Hutan", btn_bg_marine: "Laut (Penyelam)", btn_bg_coastal: "Pesisir (Pantai)", btn_bg_upload: "Muat Naik Gambar",
-        features_title: "Pilar Utama & Indikator", features_subtitle: "Nilai teras yang memacu pergerakan alam sekitar kami",
+        features_title: "Pilar Utama & Indikator", features_subtitle: "Nilai teras yang memacu pergerakan alam sekitar",
         pillar_1_title: "Fokus Biodiversiti ASEAN", pillar_1_desc: "Disesuaikan khas untuk spesies endemik dan bioma tropika Asia Tenggara.",
         pillar_2_title: "Peta Biodiversiti Interaktif", pillar_2_desc: "Teroka kawasan suaka margasatwa secara masa nyata.",
         pillar_3_title: "Kandungan Pembelajaran Mikro", pillar_3_desc: "Pelajaran ringkas yang dirancang untuk belia dan bilik darjah.", click_open_modules: "Buka 5 Modul →",
@@ -962,25 +954,26 @@
       }
     }
 
+    // ==================== ARRAY DATA MENGGUNAKAN TAG <img> ====================
     const ecoQuestions = [
-      { icon: '🐢', title: 'Sea Turtle', desc: 'Ancient marine species migrating across regional ASEAN seas.', category: 'marine' },
-      { icon: '🦧', title: 'Orangutan', desc: 'Inhabits dense tropical rainforest canopies.', category: 'forest' },
-      { icon: '🐬', title: 'Irrawaddy Dolphin', desc: 'Aquatic mammal inhabiting coastal waters & river mouths.', category: 'marine' },
-      { icon: '🐅', title: 'Sumatran Tiger', desc: 'Apex predator inside deep tropical rainforests.', category: 'forest' },
-      { icon: '🪸', title: 'Coral Reefs', desc: 'Biodiverse underwater ecosystem.', category: 'marine' },
-      { icon: '🐘', title: 'Bornean Pygmy Elephant', desc: 'Unique land mammal living in dense forest vegetation.', category: 'forest' },
-      { icon: '🦈', title: 'Whale Shark', desc: 'Largest fish filtering plankton in warm waters.', category: 'marine' },
-      { icon: '🦏', title: 'Javan / Sumatran Rhino', desc: 'Rare endemic wildlife in lowland forest reserves.', category: 'forest' },
-      { icon: '🦀', title: 'Mangrove Crab', desc: 'Thrives in mangrove coastal areas.', category: 'marine' },
-      { icon: '🦜', title: 'Hornbill', desc: 'Key seed disperser bird for forest regeneration.', category: 'forest' }
+      { icon: '<img src="turtle.jpeg" alt="Sea Turtle" class="w-20 h-20 object-cover rounded-xl mx-auto shadow-md">', title: 'Sea Turtle', desc: 'Ancient marine species migrating across regional ASEAN seas.', category: 'marine' },
+      { icon: '<img src="orangutan.jpeg" alt="Orangutan" class="w-20 h-20 object-cover rounded-xl mx-auto shadow-md">', title: 'Orangutan', desc: 'Inhabits dense tropical rainforest canopies.', category: 'forest' },
+      { icon: '<img src="dolphin.jpeg" alt="Irrawaddy Dolphin" class="w-20 h-20 object-cover rounded-xl mx-auto shadow-md">', title: 'Irrawaddy Dolphin', desc: 'Aquatic mammal inhabiting coastal waters & river mouths.', category: 'marine' },
+      { icon: '<img src="tiger.jpeg" alt="Sumatran Tiger" class="w-20 h-20 object-cover rounded-xl mx-auto shadow-md">', title: 'Sumatran Tiger', desc: 'Apex predator inside deep tropical rainforests.', category: 'forest' },
+      { icon: '<img src="coral.jpeg" alt="Coral Reefs" class="w-20 h-20 object-cover rounded-xl mx-auto shadow-md">', title: 'Coral Reefs', desc: 'Biodiverse underwater ecosystem.', category: 'marine' },
+      { icon: '<img src="elephant.jpeg" alt="Bornean Pygmy Elephant" class="w-20 h-20 object-cover rounded-xl mx-auto shadow-md">', title: 'Bornean Pygmy Elephant', desc: 'Unique land mammal living in dense forest vegetation.', category: 'forest' },
+      { icon: '<img src="whale.jpeg" alt="Whale Shark" class="w-20 h-20 object-cover rounded-xl mx-auto shadow-md">', title: 'Whale Shark', desc: 'Largest fish filtering plankton in warm waters.', category: 'marine' },
+      { icon: '<img src="rhino.jpeg" alt="Rhino" class="w-20 h-20 object-cover rounded-xl mx-auto shadow-md">', title: 'Javan / Sumatran Rhino', desc: 'Rare endemic wildlife in lowland forest reserves.', category: 'forest' },
+      { icon: '<img src="crab.jpeg" alt="Mangrove Crab" class="w-20 h-20 object-cover rounded-xl mx-auto shadow-md">', title: 'Mangrove Crab', desc: 'Thrives in mangrove coastal areas.', category: 'marine' },
+      { icon: '<img src="bird.jpeg" alt="Hornbill" class="w-20 h-20 object-cover rounded-xl mx-auto shadow-md">', title: 'Hornbill', desc: 'Key seed disperser bird for forest regeneration.', category: 'forest' }
     ];
 
     const aseanFaunaPrizes = [
-      { icon: '🦧', name: 'Bornean Orangutan', origin: '🇮🇩 Indonesia & 🇲🇾 Malaysia', desc: 'Intelligent primate of Southeast Asian tropical forest canopies.' },
-      { icon: '🐅', name: 'Indochinese Tiger', origin: '🇹🇭 Thailand, 🇻🇳 Vietnam, 🇱🇦 Laos', desc: 'Majestic apex predator of ASEAN highland forests.' },
-      { icon: '🦎', name: 'Komodo Dragon', origin: '🇮🇩 Indonesia', desc: 'Largest living lizard on Earth found in Komodo Islands.' },
-      { icon: '🐘', name: 'Asian Elephant', origin: '🇲🇲 Myanmar, 🇹🇭 Thailand, 🇰🇭 Cambodia', desc: 'Symbol of natural strength and tropical wilderness.' },
-      { icon: '🦅', name: 'Philippine Eagle', origin: '🇵🇭 Philippines', desc: 'Magnificent raptor protected in the rainforests of the Philippines.' }
+      { icon: '<img src="orangutan.jpeg" alt="Orangutan" class="w-28 h-28 object-cover rounded-2xl mx-auto shadow-lg">', name: 'Bornean Orangutan', origin: '🇮🇩 Indonesia & 🇲🇾 Malaysia', desc: 'Intelligent primate of Southeast Asian tropical forest canopies.' },
+      { icon: '<img src="tiger.jpeg" alt="Tiger" class="w-28 h-28 object-cover rounded-2xl mx-auto shadow-lg">', name: 'Indochinese Tiger', origin: '🇹🇭 Thailand, 🇻🇳 Vietnam, 🇱🇦 Laos', desc: 'Majestic apex predator of ASEAN highland forests.' },
+      { icon: '<img src="komodo.jpeg" alt="Komodo" class="w-28 h-28 object-cover rounded-2xl mx-auto shadow-lg">', name: 'Komodo Dragon', origin: '🇮🇩 Indonesia', desc: 'Largest living lizard on Earth found in Komodo Islands.' },
+      { icon: '<img src="elephant.jpeg" alt="Elephant" class="w-28 h-28 object-cover rounded-2xl mx-auto shadow-lg">', name: 'Asian Elephant', origin: '🇲🇲 Myanmar, 🇹🇭 Thailand, 🇰🇭 Cambodia', desc: 'Symbol of natural strength and tropical wilderness.' },
+      { icon: '<img src="eagle.jpeg" alt="Eagle" class="w-28 h-28 object-cover rounded-2xl mx-auto shadow-lg">', name: 'Philippine Eagle', origin: '🇵🇭 Philippines', desc: 'Magnificent raptor protected in the rainforests of the Philippines.' }
     ];
 
     let currentQuestionIndex = 0;
@@ -1075,10 +1068,11 @@
       document.body.classList.remove('modal-active');
     }
 
+    // Menggunakan innerHTML agar tag <img> pada game tereksekusi dengan benar
     function renderQuestion() {
       const q = ecoQuestions[currentQuestionIndex];
       document.getElementById('gameProgressText').textContent = `Question ${currentQuestionIndex + 1} of 10`;
-      document.getElementById('gameItemIcon').textContent = q.icon;
+      document.getElementById('gameItemIcon').innerHTML = q.icon;
       document.getElementById('gameItemTitle').textContent = q.title;
       document.getElementById('gameItemDesc').textContent = q.desc;
       document.getElementById('gameFeedback').innerHTML = '';
@@ -1115,12 +1109,13 @@
       }
     }
 
+    // Menggunakan innerHTML agar gambar hadiah tereksekusi dengan benar
     function openGiftBox() {
       playWinSound();
       document.getElementById('giftBoxContainer').classList.add('hidden');
       const randomFauna = aseanFaunaPrizes[Math.floor(Math.random() * aseanFaunaPrizes.length)];
       document.getElementById('congratulationsText').textContent = `Congratulations, you've got a ${randomFauna.name}!`;
-      document.getElementById('prizeIcon').textContent = randomFauna.icon;
+      document.getElementById('prizeIcon').innerHTML = randomFauna.icon;
       document.getElementById('prizeName').textContent = randomFauna.name;
       document.getElementById('prizeOrigin').textContent = randomFauna.origin;
       document.getElementById('prizeDesc').textContent = randomFauna.desc;
